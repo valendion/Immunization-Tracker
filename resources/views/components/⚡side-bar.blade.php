@@ -27,11 +27,11 @@ new class extends Component {
                 data-accordion="false">
 
                 <li class="nav-item">
-                    <a href="{{ route('/') }}" class="nav-link">
+                    <a wire:navigate href="{{ route('/') }}" class="nav-link ">
+                        {{-- wire:current="active"> --}}
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Dashboard
-
                         </p>
                     </a>
                 </li>
@@ -39,7 +39,7 @@ new class extends Component {
                 <li class="nav-header">Menu Super Admin</li>
                 <li class="nav-item">
                     <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" {{-- class="nav-link @yield('menuSuperAdminUser')"> --}}
-                        class="nav-link ">
+                        class="nav-link" wire:current="active">
                         <i class="nav-icon fas fa-user "></i>
                         <p>
                             Vaccine
@@ -48,12 +48,12 @@ new class extends Component {
                 </li>
 
                 <li class="nav-item">
-                    {{--      <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link @yield('menuSuperAdminKategori')"> --}}
-                    class="nav-link">
-                    <i class="nav-icon fas fa-list"></i>
-                    <p>
-                        Facility
-                    </p>
+                    <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
+                        wire:current="active">
+                        <i class="nav-icon fas fa-list"></i>
+                        <p>
+                            Facility
+                        </p>
                     </a>
                 </li>
 

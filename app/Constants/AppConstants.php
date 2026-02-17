@@ -8,6 +8,8 @@ class AppConstants
     public const DATA_FACILITY = 'DATA FACILITY';
     public const DATA_CHILD    = 'DATA CHILD';
 
+    public const DASHBOARD = 'DASHBOARD';
+
     public const CREATE = 'CREATE';
 
     public const UPDATE = 'UPDATE';

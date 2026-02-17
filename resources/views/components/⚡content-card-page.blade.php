@@ -27,12 +27,16 @@ new class extends Component {
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">
+                            <li class="breadcrumb-item"><a href="{{ route('/') }}" wire:current="active" wire:navigate>
                                     <i class="fas fa-home mr-1"></i>
-                                    Dashboard</a></li>
-                            <li class="breadcrumb-item active">
-                                <i class="fas fa-user mr-1"></i>
-                                {{ $title }}
+                                    DASHBOARD</a></li>
+                            @if ($title == 'DASHBOARD')
+                            @else
+                                <li class="breadcrumb-item ">
+                                    <i class="fas fa-user mr-1"></i>
+                                    {{ $title }}
+                            @endif
+
 
                             </li>
                         </ol>
@@ -48,26 +52,13 @@ new class extends Component {
                 {{ $slot }}
             </div>
             <!-- /.card-footer-->
+
+            <!-- /.card -->
+
+
+        </section>
+
     </div>
-    <!-- /.card -->
 
-
-    </section>
-
-    {{-- @include('livewire.superadmin.user.create') --}}
-
-    {{-- Close Modal --}}
-    @script
-        <script>
-            $wire.on('closeCreateModal', () => {
-                $('#createModal').modal('hide');
-
-                Swal.fire({
-                    title: "Good job!",
-                    text: "You clicked the button!",
-                    icon: "success"
-                });
-            });
-        </script>
-    @endscript
 </div>
+{{-- @include('livewire.superadmin.user.create') --}}

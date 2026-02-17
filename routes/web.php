@@ -18,3 +18,10 @@ Route::livewire('/superadmin/vaccine/create', 'pages::superadmin.vaccine.create'
     ->name('superadmin.vaccine.create');
 Route::livewire('/superadmin/vaccine/{id}/edit', 'pages::superadmin.vaccine.edit')
     ->name('superadmin.vaccine.edit');
+
+Route::livewire('/superadmin/facility', 'pages::superadmin.facility')
+    ->name('superadmin.facility.index');
+Route::livewire('/superadmin/facility/create', 'pages::superadmin.facility.create')
+    ->name('superadmin.facility.create');
+Route::livewire('/superadmin/facility/{id}/edit', 'pages::superadmin.facility.edit')
+    ->name('superadmin.facility.edit');
