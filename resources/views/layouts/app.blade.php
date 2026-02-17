@@ -14,18 +14,17 @@
 </head>
 
 <body class="hold-transition sidebar-mini">
-    <!-- Site wrapper -->
+
     <div class="wrapper">
-        {{-- @include('layouts.navbar')
-        @include('layouts.sidebar') --}}
+
         <livewire:navbar />
         <livewire:side-bar />
         {{ $slot }}
         <livewire:footer />
-        {{-- @include('layouts.footer') --}}
+
 
         @include('layouts.script')
-        {{-- <livewire:sweet-alert /> --}}
+
         @livewireScripts
     </div>
 

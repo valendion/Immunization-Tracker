@@ -10,7 +10,7 @@ new class extends Component {
 <!-- Main Sidebar Container -->
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ asset('adminlte3/index3.html') }}" class="brand-link">
+    <a href="#" class="brand-link">
         <img src="{{ asset('adminlte3/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">AdminLTE 3</span>
@@ -27,8 +27,7 @@ new class extends Component {
                 data-accordion="false">
 
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('/') }}" class="nav-link ">
-                        {{-- wire:current="active"> --}}
+                    <a wire:navigate href="{{ route('dashboard') }}" class="nav-link " wire:current.exact="active">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Dashboard
@@ -38,8 +37,8 @@ new class extends Component {
 
                 <li class="nav-header">Menu Super Admin</li>
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" {{-- class="nav-link @yield('menuSuperAdminUser')"> --}}
-                        class="nav-link" wire:current="active">
+                    <a wire:navigate href="{{ route('superadmin.vaccine.index') }}"
+                        class="nav-link {{ request()->routeIs('superadmin.vaccine.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user "></i>
                         <p>
                             Vaccine
@@ -48,8 +47,8 @@ new class extends Component {
                 </li>
 
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
-                        wire:current="active">
+                    <a wire:navigate href="{{ route('superadmin.facility.index') }}"
+                        class="nav-link {{ request()->routeIs('superadmin.facility.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-list"></i>
                         <p>
                             Facility
