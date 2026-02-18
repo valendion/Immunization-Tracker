@@ -37,8 +37,8 @@ new class extends Component {
 
                 <li class="nav-header">Menu Super Admin</li>
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.vaccine.index') }}"
-                        class="nav-link {{ request()->routeIs('superadmin.vaccine.*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" class="nav-link "
+                        wire:current="active">
                         <i class="nav-icon fas fa-user "></i>
                         <p>
                             Vaccine
@@ -47,8 +47,8 @@ new class extends Component {
                 </li>
 
                 <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.facility.index') }}"
-                        class="nav-link {{ request()->routeIs('superadmin.facility.*') ? 'active' : '' }}">
+                    <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
+                        wire:current="active">
                         <i class="nav-icon fas fa-list"></i>
                         <p>
                             Facility
@@ -57,12 +57,12 @@ new class extends Component {
                 </li>
 
                 <li class="nav-item">
-                    {{--    <a wire:navigate href="{{ route('superadmin.child.index') }}" {{-- class="nav-link @yield('menuSuperAdminBarang')"> 
-                        class="nav-link"> --}}
-                    <i class="nav-icon fas fa-warehouse"></i>
-                    <p>
-                        Child
-                    </p>
+                    <a wire:navigate hr class="nav-link" href="{{ route('superadmin.child.index') }}" class="nav-link"
+                        wire:current="active">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <p>
+                            Child
+                        </p>
                     </a>
                 </li>
 

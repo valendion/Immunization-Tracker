@@ -3,22 +3,23 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Facility;
-use Livewire\Attributes\Validate;
 
+use Illuminate\Validation\ValidationException;
 new class extends Component {
     public $title = AppConstants::DATA_FACILITY;
     public $sub_title = AppConstants::CREATE;
 
-    #[Validate('required|string|min:3|max:255')]
     public $name = '';
 
-    #[Validate('required|string|min:5|max:255')]
     public $address = '';
 
     public function create()
     {
         try {
-            $this->validate();
+            $this->validate([
+                'name' => 'required|min:3|unique:facilities,name',
+                'address' => 'required|min:5',
+            ]);
 
             $facility = new Facility();
             $facility->name = $this->name;
@@ -37,6 +38,8 @@ new class extends Component {
             ]);
 
             $this->redirect('/superadmin/facility');
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             // ALERT - Error
             session()->flash('swal', [
@@ -58,11 +61,11 @@ new class extends Component {
 
     <div class="card-body">
         <form wire:submit.prevent="create">
+
+            {{-- NAME --}}
             <div class="form-group">
-                <label for="name">Name
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="text" wire:model.live.blur="name" class="form-control " id="name"
+                <label for="name">Name <span class="text-danger">*</span></label>
+                <input type="text" wire:model.live.blur="name" class="form-control @error('name') is-invalid @enderror"
                     placeholder="Enter name">
 
                 @error('name')
@@ -70,21 +73,21 @@ new class extends Component {
                 @enderror
             </div>
 
+            {{-- ADDRESS --}}
             <div class="form-group">
-                <label for="name">Address
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="text" wire:model.live.blur="address" class="form-control " id="description"
-                    placeholder="Enter address">
+                <label for="address">Address <span class="text-danger">*</span></label>
+                <textarea wire:model.live.blur="address" class="form-control @error('address') is-invalid @enderror"
+                    placeholder="Enter address"></textarea>
 
                 @error('address')
                     <small class="text-danger mt-1">{{ $message }}</small>
                 @enderror
             </div>
 
+            {{-- SUBMIT --}}
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-1"></i>
-                Save</button>
+                <i class="fas fa-save mr-1"></i> Save
+            </button>
 
         </form>
     </div>

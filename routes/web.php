@@ -22,6 +22,13 @@ Route::livewire('/superadmin/vaccine/{id}/edit', 'pages::superadmin.vaccine.edit
 Route::livewire('/superadmin/facility', 'pages::superadmin.facility')
     ->name('superadmin.facility.index');
 Route::livewire('/superadmin/facility/create', 'pages::superadmin.facility.create')
-    ->name('/superadmin.facility.create');
+    ->name('superadmin.facility.create');
 Route::livewire('superadmin/facility/{id}/edit', 'pages::superadmin.facility.edit')
-    ->name('/superadmin.facility.edit');
+    ->name('superadmin.facility.edit');
+
+Route::livewire('/superadmin/child', 'pages::superadmin.child')
+    ->name('superadmin.child.index');
+Route::livewire('/superadmin/child/create', 'pages::superadmin.child.create')
+    ->name('superadmin.child.create');
+Route::livewire('superadmin/child/{id}/edit', 'pages::superadmin.child.edit')
+    ->name('superadmin.child.edit');

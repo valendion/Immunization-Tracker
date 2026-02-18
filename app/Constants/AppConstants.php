@@ -16,4 +16,18 @@ class AppConstants
 
     public const DELETE = 'DELETE';
 
+    // Gender Options
+    const GENDERS = [
+        'male'   => 'Male',
+        'female' => 'Female',
+    ];
+
+    // Pagination Options
+    const PAGINATIONS = [
+        10  => 10,
+        25  => 25,
+        50  => 50,
+        100 => 100,
+    ];
+
 }

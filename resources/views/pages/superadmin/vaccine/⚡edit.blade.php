@@ -3,22 +3,19 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Vaccine;
-use Livewire\Attributes\Validate;
 use Livewire\Attributes\Url;
+use Illuminate\Validation\ValidationException;
+
 new class extends Component {
     public $title = AppConstants::DATA_VACCINE;
     public $sub_title = AppConstants::UPDATE;
 
-    #[Validate('required|string|min:3|max:255')]
     public $name = '';
 
-    #[Validate('required|string|min:5')]
     public $description = '';
 
-    #[Validate('required|string|max:50')]
     public $type = '';
 
-    #[Validate('required|integer|min:0|max:60')]
     public $min_age_months = 0;
 
     #[Url]
@@ -39,7 +36,12 @@ new class extends Component {
     public function update()
     {
         try {
-            $this->validate();
+            $this->validate([
+                'name' => 'required|string|min:3|max:255|unique:vaccines,name,' . $this->id,
+                'description' => 'required|string|min:5',
+                'type' => 'required|string|max:50',
+                'min_age_months' => 'required|integer|min:0|max:60',
+            ]);
 
             $this->vaccine->update([
                 'name' => $this->name,
@@ -59,6 +61,8 @@ new class extends Component {
             ]);
 
             $this->redirect('/superadmin/vaccine');
+        } catch (ValidationException $e) {
+            throw $e; // biarkan Livewire menangani validasinya
         } catch (\Exception $e) {
             // ALERT - Error
             session()->flash('swal', [

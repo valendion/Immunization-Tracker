@@ -5,12 +5,20 @@ use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use App\Models\Vaccine;
 use Livewire\Attributes\On;
+use App\Constants\AppConstants;
 new class extends Component {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
     public $paginate = 10;
     public $search = '';
+
+    public $paginationOptions = [];
+
+    public function mount()
+    {
+        $this->paginationOptions = AppConstants::PAGINATIONS;
+    }
 
     #[Computed]
     public function vaccines()
@@ -38,7 +46,7 @@ new class extends Component {
     {
         Vaccine::findOrFail($id)->delete();
 
-        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Vaccine successfully deleted']);
+        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Vaccine successfully deleted', 'timer' => 2000]);
     }
 };
 ?>
@@ -46,11 +54,10 @@ new class extends Component {
 <div>
     <div class="mb-3 d-flex justify-content-between">
         <div class="col-2">
-            <select class="form-control" wire:model.live="paginate">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
+            <select wire:model.live="paginate" class="form-control">
+                @foreach ($this->paginationOptions as $value => $label)
+                    <option value="{{ $value }}">{{ $label }}</option>
+                @endforeach
             </select>
         </div>
         <div class="col-6">

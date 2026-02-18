@@ -9,28 +9,15 @@
                 icon: '{{ session('swal.icon') }}',
                 title: '{{ session('swal.title') }}',
                 text: '{{ session('swal.message') }}',
-                timer: {{ session('swal.timer', 3000) }},
+                timer: {{ session('swal.timer', 2000) }},
                 showConfirmButton: false,
                 position: 'center',
-                didOpen: () => {
-                    // Hapus flash session setelah ditampilkan
-                    @php session()->forget('swal'); @endphp
-                }
+
             });
         @endif
 
         // Event listener untuk alert biasa (tanpa redirect)
         Livewire.on('show-alert', (data) => {
-
-            console.log('Data received:', data); // Lihat di console browser
-            console.log('Type:', typeof data);
-            console.log('Is array:', Array.isArray(data));
-            // const {
-            //     icon,
-            //     title,
-            //     message = '',
-            //     timer = 3000
-            // } = data;
 
             Swal.fire({
                 icon: data[0].icon,

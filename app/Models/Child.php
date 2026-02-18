@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Child extends Model
 {
@@ -26,5 +27,10 @@ class Child extends Model
     public function immunizationRecords()
     {
         return $this->hasMany(ImmunizationRecord::class);
+    }
+
+    public function getDateOfBirthAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

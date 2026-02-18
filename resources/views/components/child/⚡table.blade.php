@@ -3,7 +3,7 @@
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
-use App\Models\Facility;
+use App\Models\Child;
 use Livewire\Attributes\On;
 use App\Constants\AppConstants;
 new class extends Component {
@@ -20,30 +20,33 @@ new class extends Component {
     }
 
     #[Computed]
-    public function facilities()
+    public function children()
     {
-        return Facility::where('name', 'like', '%' . $this->search . '%')
+        return Child::where('nik', 'like', '%' . $this->search . '%')
+            ->orWhere('name', 'like', '%' . $this->search . '%')
+            ->orWhere('gender', 'like', '%' . $this->search . '%')
             ->orWhere('address', 'like', '%' . $this->search . '%')
+            ->orWhere('parent_name', 'like', '%' . $this->search . '%')
             ->paginate($this->paginate);
     }
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('superadmin.facility.edit', ['id' => $id]);
+        $this->redirectRoute('superadmin.child.edit', ['id' => $id]);
     }
 
     public function delete($id)
     {
-        $facility = Facility::findOrFail($id);
-        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Facilty', 'text' => "Do you really want to delete {$facility->name} facility?", 'icon' => 'warning']);
+        $child = Child::findOrFail($id);
+        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Child', 'text' => "Do you really want to delete {$child->name} child?", 'icon' => 'warning']);
     }
 
     #[On('confirmed-delete')]
     public function confirmedDelete($id)
     {
-        Facility::findOrFail($id)->delete();
+        Child::findOrFail($id)->delete();
 
-        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Facilty successfully deleted', 'timer' => 2000]);
+        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Child successfully deleted', 'timer' => 2000]);
     }
 };
 ?>
@@ -57,6 +60,8 @@ new class extends Component {
                 @endforeach
             </select>
         </div>
+
+
         <div class="col-6">
             <input type="text" class="form-control" placeholder="Pencarian..." wire:model.live="search">
         </div>
@@ -67,20 +72,26 @@ new class extends Component {
         <table class="table table-hover">
             <thead>
                 <tr>
-
                     <th>No</th>
+                    <th>Nik</th>
                     <th>Name</th>
+                    <th>Gender</th>
+                    <th>Date of birth</th>
                     <th>Address</th>
+                    <th>Parent Name</th>
                     <th><i class="fas fa-cog"></i></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->facilities() ?? [] as $item)
+                @foreach ($this->children() ?? [] as $item)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
+                        <td>{{ $item->nik }}</td>
                         <td>{{ $item->name }}</td>
+                        <td>{{ $item->gender }}</td>
+                        <td>{{ $item->date_of_birth }}</td>
                         <td>{{ $item->address }}</td>
-
+                        <td>{{ $item->parent_name }}</td>
                         <td>
                             <button class="btn btn-sm btn-info mr-1">
                                 <i class="fas fa-eye"></i>
@@ -97,6 +108,6 @@ new class extends Component {
             </tbody>
         </table>
 
-        {{ $this->facilities()->links() }}
+        {{ $this->children()->links() }}
     </div>
 </div>

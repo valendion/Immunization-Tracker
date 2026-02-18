@@ -3,28 +3,28 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Vaccine;
-use Livewire\Attributes\Validate;
-
+use Illuminate\Validation\ValidationException;
 new class extends Component {
     public $title = AppConstants::DATA_VACCINE;
     public $sub_title = AppConstants::CREATE;
 
-    #[Validate('required|string|min:3|max:255')]
     public $name = '';
 
-    #[Validate('required|string|min:5')]
     public $description = '';
 
-    #[Validate('required|string|max:50')]
     public $type = '';
 
-    #[Validate('required|integer|min:0|max:60')]
     public $min_age_months = 0;
 
     public function create()
     {
         try {
-            $this->validate();
+            $this->validate([
+                'name' => 'required|string|min:3|max:255|unique:vaccines,name',
+                'description' => 'required|string|min:5',
+                'type' => 'required|string|max:50',
+                'min_age_months' => 'required|integer|min:0|max:60',
+            ]);
 
             $vaccine = new Vaccine();
             $vaccine->name = $this->name;
@@ -44,6 +44,8 @@ new class extends Component {
             ]);
 
             $this->redirect('/superadmin/vaccine');
+        } catch (ValidationException $e) {
+            throw $e; // biarkan Livewire menangani validasinya
         } catch (\Exception $e) {
             // ALERT - Error
             session()->flash('swal', [
@@ -65,58 +67,48 @@ new class extends Component {
 
     <div class="card-body">
         <form wire:submit.prevent="create">
-            <div class="form-group">
-                <label for="name">Name
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="text" wire:model.live.blur="name" class="form-control " id="name"
-                    placeholder="Enter name">
 
+            {{-- NAME --}}
+            <div class="form-group">
+                <label for="name">Name <span class="text-danger">*</span></label>
+                <input type="text" wire:model="name" class="form-control" id="name" placeholder="Enter name">
                 @error('name')
-                    <small class="text-danger mt-1">{{ $message }}</small>
+                    <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
+            {{-- DESCRIPTION --}}
             <div class="form-group">
-                <label for="name">Description
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="text" wire:model.live.blur="description" class="form-control " id="description"
+                <label for="description">Description <span class="text-danger">*</span></label>
+                <input type="text" wire:model="description" class="form-control" id="description"
                     placeholder="Masukkan description">
-
                 @error('description')
-                    <small class="text-danger mt-1">{{ $message }}</small>
+                    <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
+            {{-- TYPE --}}
             <div class="form-group">
-                <label for="name">Type
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="text" wire:model.live.blur="type" class="form-control " id="type"
-                    placeholder="Enter type">
-
+                <label for="type">Type <span class="text-danger">*</span></label>
+                <input type="text" wire:model="type" class="form-control" id="type" placeholder="Enter type">
                 @error('type')
-                    <small class="text-danger mt-1">{{ $message }}</small>
+                    <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
+            {{-- MIN AGE MONTHS --}}
             <div class="form-group">
-                <label for="name">Min Age Months
-                    <span class="text-danger">*</span>
-                </label>
-                <input type="number" inputmode="numeric" wire:model.live.blur="min_age_months" class="form-control "
-                    id="min_age_months" placeholder="Enter min age months">
-
+                <label for="min_age_months">Min Age Months <span class="text-danger">*</span></label>
+                <input type="number" wire:model="min_age_months" class="form-control" id="min_age_months"
+                    placeholder="Enter min age months">
                 @error('min_age_months')
-                    <small class="text-danger mt-1">{{ $message }}</small>
+                    <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
-
 
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-1"></i>
-                Save</button>
+                <i class="fas fa-save mr-1"></i> Save
+            </button>
 
         </form>
     </div>
