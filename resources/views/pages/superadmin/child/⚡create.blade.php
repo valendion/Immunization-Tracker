@@ -35,7 +35,7 @@ new class extends Component {
                 'nik' => 'digits:16|unique:children,nik',
                 'name' => 'required|string|min:3|max:255',
                 'gender' => 'required|in:male,female',
-                'date_of_birth' => 'required|date|before:today',
+                'date_of_birth' => 'required|date|before_or_equal:today',
                 'address' => 'required|string|min:5|max:255',
                 'parent_name' => 'required|string|min:3|max:255',
             ]);

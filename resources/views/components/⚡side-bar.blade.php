@@ -66,6 +66,15 @@ new class extends Component {
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a wire:navigate hr class="nav-link" href="{{ route('superadmin.immunization-record.index') }}"
+                        class="nav-link" wire:current="active">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <p>
+                            Immunization Record </p>
+                    </a>
+                </li>
+
                 <li class="nav-header">Admin</li>
                 {{-- <li class="nav-item">
                             <a href="#" class="nav-link">

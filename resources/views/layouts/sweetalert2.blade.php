@@ -1,8 +1,5 @@
 <script>
-    // resources/js/sweetalert-config.js
-
     document.addEventListener('livewire:init', function() {
-
         // CEK FLASH SESSION DARI REDIRECT
         @if (session()->has('swal'))
             Swal.fire({

@@ -25,8 +25,10 @@
 
         @include('layouts.script')
 
+
         @livewireScripts
     </div>
 
-    <script>
-        < /html>
+</body>
+
+</html>

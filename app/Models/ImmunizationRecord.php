@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class ImmunizationRecord extends Model
 {
@@ -34,5 +35,9 @@ class ImmunizationRecord extends Model
     public function facility(): BelongsTo
     {
         return $this->belongsTo(Facility::class, 'health_facility_id');
+    }
+    public function getDateGivenAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }

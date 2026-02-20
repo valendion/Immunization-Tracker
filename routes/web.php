@@ -32,3 +32,10 @@ Route::livewire('/superadmin/child/create', 'pages::superadmin.child.create')
     ->name('superadmin.child.create');
 Route::livewire('superadmin/child/{id}/edit', 'pages::superadmin.child.edit')
     ->name('superadmin.child.edit');
+
+Route::livewire('/superadmin/immunization-record', 'pages::superadmin.immunization-record')
+    ->name('superadmin.immunization-record.index');
+Route::livewire('/superadmin/immunization-record/create', 'pages::superadmin.immunization-record.create')
+    ->name('superadmin.immunization-record.create');
+Route::livewire('superadmin/immunization-record/{id}/edit', 'pages::superadmin.immunization-record.edit')
+    ->name('superadmin.immunization-record.edit');

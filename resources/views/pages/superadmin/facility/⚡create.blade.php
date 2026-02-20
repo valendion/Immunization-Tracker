@@ -65,7 +65,7 @@ new class extends Component {
             {{-- NAME --}}
             <div class="form-group">
                 <label for="name">Name <span class="text-danger">*</span></label>
-                <input type="text" wire:model.live.blur="name" class="form-control @error('name') is-invalid @enderror"
+                <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror"
                     placeholder="Enter name">
 
                 @error('name')
@@ -76,8 +76,7 @@ new class extends Component {
             {{-- ADDRESS --}}
             <div class="form-group">
                 <label for="address">Address <span class="text-danger">*</span></label>
-                <textarea wire:model.live.blur="address" class="form-control @error('address') is-invalid @enderror"
-                    placeholder="Enter address"></textarea>
+                <textarea wire:model="address" class="form-control @error('address') is-invalid @enderror" placeholder="Enter address"></textarea>
 
                 @error('address')
                     <small class="text-danger mt-1">{{ $message }}</small>

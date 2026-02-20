@@ -13,5 +13,7 @@ new class extends Component {
         <h4>{{ $this->title }}</h4>
     </div>
 
-    <div class="card-body"></div>
+    <div class="card-body">
+
+    </div>
 </livewire:content-card-page>

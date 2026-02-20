@@ -82,7 +82,7 @@ new class extends Component {
             <tbody>
                 @foreach ($this->vaccines() ?? [] as $item)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $this->vaccines->firstItem() + $loop->index }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->description }}</td>
                         <td>{{ $item->type }}</td>

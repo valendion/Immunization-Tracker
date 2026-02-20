@@ -85,7 +85,7 @@ new class extends Component {
             <tbody>
                 @foreach ($this->children() ?? [] as $item)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $this->children->firstItem() + $loop->index }}</td>
                         <td>{{ $item->nik }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->gender }}</td>
