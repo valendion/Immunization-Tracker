@@ -3,15 +3,18 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Facility;
-
+use Livewire\Attributes\Title;
 use Illuminate\Validation\ValidationException;
-new class extends Component {
+
+new #[Title('Create Facility')] class extends Component {
     public $title = AppConstants::DATA_FACILITY;
     public $sub_title = AppConstants::CREATE;
 
     public $name = '';
 
     public $address = '';
+
+    public $icon = 'building';
 
     public function create()
     {
@@ -53,7 +56,7 @@ new class extends Component {
 };
 ?>
 
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>

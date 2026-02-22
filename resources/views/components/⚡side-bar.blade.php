@@ -13,7 +13,7 @@ new class extends Component {
     <a href="#" class="brand-link">
         <img src="{{ asset('adminlte3/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
             class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <span class="brand-text font-weight-light">Immunization Tracker</span>
     </a>
 
     <!-- Sidebar -->
@@ -34,49 +34,51 @@ new class extends Component {
                         </p>
                     </a>
                 </li>
+                @if (auth()->user()->role === 'admin')
+                    <li class="nav-header">Menu Admin</li>
+                    <li class="nav-item">
+                        <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" class="nav-link "
+                            wire:current="active">
+                            <i class="nav-icon fas fa-syringe"></i>
+                            <p>
+                                Vaccine
+                            </p>
+                        </a>
+                    </li>
 
-                <li class="nav-header">Menu Super Admin</li>
-                <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" class="nav-link "
-                        wire:current="active">
-                        <i class="nav-icon fas fa-user "></i>
-                        <p>
-                            Vaccine
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
+                            wire:current="active">
+                            <i class="nav-icon fas fa-building"></i>
+                            <p>
+                                Facility
+                            </p>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
-                        wire:current="active">
-                        <i class="nav-icon fas fa-list"></i>
-                        <p>
-                            Facility
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a wire:navigate hr class="nav-link" href="{{ route('superadmin.child.index') }}"
+                            class="nav-link" wire:current="active">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Child
+                            </p>
+                        </a>
+                    </li>
 
-                <li class="nav-item">
-                    <a wire:navigate hr class="nav-link" href="{{ route('superadmin.child.index') }}" class="nav-link"
-                        wire:current="active">
-                        <i class="nav-icon fas fa-warehouse"></i>
-                        <p>
-                            Child
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item">
+                        <a wire:navigate hr class="nav-link" href="{{ route('superadmin.immunization-record.index') }}"
+                            class="nav-link" wire:current="active">
+                            <i class="nav-icon fas fa-file"></i>
 
-                <li class="nav-item">
-                    <a wire:navigate hr class="nav-link" href="{{ route('superadmin.immunization-record.index') }}"
-                        class="nav-link" wire:current="active">
-                        <i class="nav-icon fas fa-warehouse"></i>
-                        <p>
-                            Immunization Record </p>
-                    </a>
-                </li>
-
-                <li class="nav-header">Admin</li>
-                {{-- <li class="nav-item">
+                            <p>
+                                Immunization Record </p>
+                        </a>
+                    </li>
+                @endif
+                @if (auth()->user()->role === 'operator')
+                    <li class="nav-header">Menu Operator</li>
+                    {{-- <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
                                 <p>
@@ -84,6 +86,8 @@ new class extends Component {
                                 </p>
                             </a>
                         </li> --}}
+                @endif
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

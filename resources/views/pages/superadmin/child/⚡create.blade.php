@@ -4,8 +4,9 @@ use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Child;
 use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Title;
 
-new class extends Component {
+new #[Title('Create Child')] class extends Component {
     public $title = AppConstants::DATA_CHILD;
     public $sub_title = AppConstants::CREATE;
 
@@ -22,6 +23,8 @@ new class extends Component {
     public $parent_name = '';
 
     public $genderOptions = [];
+
+    public $icon = 'users';
 
     public function mount()
     {
@@ -74,8 +77,7 @@ new class extends Component {
 };
 ?>
 
-
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>

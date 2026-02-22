@@ -8,7 +8,8 @@ use App\Models\Child;
 use App\Models\Vaccine;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
-new class extends Component {
+use Livewire\Attributes\Title;
+new #[Title('Create Immunization Record')] class extends Component {
     public $title = AppConstants::DATA_IMMUNIZATION_RECORD;
     public $sub_title = AppConstants::CREATE;
 
@@ -22,7 +23,7 @@ new class extends Component {
     public $children = [];
     public $vaccines = [];
     public $facilities = [];
-
+    public $icon = 'file';
     // MOUNT (LOAD DATA PERTAMA KALI)
     public function mount()
     {
@@ -83,7 +84,7 @@ new class extends Component {
 };
 ?>
 
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>

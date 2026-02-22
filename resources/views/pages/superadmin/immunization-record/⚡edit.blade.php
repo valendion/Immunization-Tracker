@@ -10,7 +10,8 @@ use Livewire\Attributes\Url;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
-new class extends Component {
+use Livewire\Attributes\Title;
+new #[Title('Edit Immunization Record')] class extends Component {
     public $title = AppConstants::DATA_IMMUNIZATION_RECORD;
     public $sub_title = AppConstants::UPDATE;
     public $child_id = '';
@@ -23,7 +24,7 @@ new class extends Component {
     public $children = [];
     public $vaccines = [];
     public $facilities = [];
-
+    public $icon = 'file';
     #[Url]
     public $id;
 
@@ -96,7 +97,7 @@ new class extends Component {
 };
 ?>
 
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>

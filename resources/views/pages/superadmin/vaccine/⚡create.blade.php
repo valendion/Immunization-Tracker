@@ -3,8 +3,9 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Vaccine;
+use Livewire\Attributes\Title;
 use Illuminate\Validation\ValidationException;
-new class extends Component {
+new #[Title('Create Vaccine')] class extends Component {
     public $title = AppConstants::DATA_VACCINE;
     public $sub_title = AppConstants::CREATE;
 
@@ -13,7 +14,7 @@ new class extends Component {
     public $description = '';
 
     public $type = '';
-
+    public $icon = 'syringe';
     public $min_age_months = 0;
 
     public function create()
@@ -59,7 +60,7 @@ new class extends Component {
 };
 ?>
 
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>

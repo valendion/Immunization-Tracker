@@ -6,7 +6,8 @@ use App\Models\Child;
 use Livewire\Attributes\Url;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
-new class extends Component {
+use Livewire\Attributes\Title;
+new #[Title('Edit Child')] class extends Component {
     public $title = AppConstants::DATA_VACCINE;
     public $sub_title = AppConstants::UPDATE;
     public $nik = '';
@@ -24,6 +25,8 @@ new class extends Component {
     public $genderOptions = [];
 
     public Child $child;
+
+    public $icon = 'users';
 
     #[Url]
     public $id;
@@ -88,87 +91,85 @@ new class extends Component {
 };
 ?>
 
-<div>
-    <livewire:content-card-page :title="$title">
-        <div class="card-header">
-            <h4>{{ $this->sub_title }}</h4>
-        </div>
+<livewire:content-card-page :title="$title" :icon="$icon">
+    <div class="card-header">
+        <h4>{{ $this->sub_title }}</h4>
+    </div>
 
-        <div class="card-body">
-            <form wire:submit.prevent="update">
+    <div class="card-body">
+        <form wire:submit.prevent="update">
 
-                {{-- NIK --}}
-                <div class="form-group">
-                    <label for="nik">NIK</label>
-                    <input type="number" wire:model="nik" class="form-control @error('nik') is-invalid @enderror"
-                        id="nik" placeholder="Enter NIK">
-                    @error('nik')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- NIK --}}
+            <div class="form-group">
+                <label for="nik">NIK</label>
+                <input type="number" wire:model="nik" class="form-control @error('nik') is-invalid @enderror"
+                    id="nik" placeholder="Enter NIK">
+                @error('nik')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                {{-- NAME --}}
-                <div class="form-group">
-                    <label for="name">Name <span class="text-danger">*</span></label>
-                    <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror"
-                        id="name" placeholder="Enter name">
-                    @error('name')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- NAME --}}
+            <div class="form-group">
+                <label for="name">Name <span class="text-danger">*</span></label>
+                <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror"
+                    id="name" placeholder="Enter name">
+                @error('name')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                {{-- GENDER --}}
-                <div class="form-group">
-                    <label for="gender">Gender <span class="text-danger">*</span></label>
-                    <select wire:model="gender" class="form-control @error('gender') is-invalid @enderror">
-                        <option disabled value="">-- Select Gender --</option>
-                        @foreach ($this->genderOptions as $value => $label)
-                            <option value="{{ $value }}">{{ $label }}</option>
-                        @endforeach
-                    </select>
-                    @error('gender')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- GENDER --}}
+            <div class="form-group">
+                <label for="gender">Gender <span class="text-danger">*</span></label>
+                <select wire:model="gender" class="form-control @error('gender') is-invalid @enderror">
+                    <option disabled value="">-- Select Gender --</option>
+                    @foreach ($this->genderOptions as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
+                </select>
+                @error('gender')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                {{-- DATE OF BIRTH --}}
-                <div class="form-group">
-                    <label for="date_of_birth">Date of birth <span class="text-danger">*</span></label>
-                    <input type="date" wire:model="date_of_birth"
-                        class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth">
-                    @error('date_of_birth')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- DATE OF BIRTH --}}
+            <div class="form-group">
+                <label for="date_of_birth">Date of birth <span class="text-danger">*</span></label>
+                <input type="date" wire:model="date_of_birth"
+                    class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth">
+                @error('date_of_birth')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                {{-- ADDRESS --}}
-                <div class="form-group">
-                    <label for="address">Address <span class="text-danger">*</span></label>
-                    <textarea wire:model="address" class="form-control @error('address') is-invalid @enderror" id="address"
-                        placeholder="Enter address"></textarea>
-                    @error('address')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- ADDRESS --}}
+            <div class="form-group">
+                <label for="address">Address <span class="text-danger">*</span></label>
+                <textarea wire:model="address" class="form-control @error('address') is-invalid @enderror" id="address"
+                    placeholder="Enter address"></textarea>
+                @error('address')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                {{-- PARENT NAME --}}
-                <div class="form-group">
-                    <label for="parent_name">Parent Name <span class="text-danger">*</span></label>
-                    <input type="text" wire:model="parent_name"
-                        class="form-control @error('parent_name') is-invalid @enderror" id="parent_name"
-                        placeholder="Enter parent name">
-                    @error('parent_name')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- PARENT NAME --}}
+            <div class="form-group">
+                <label for="parent_name">Parent Name <span class="text-danger">*</span></label>
+                <input type="text" wire:model="parent_name"
+                    class="form-control @error('parent_name') is-invalid @enderror" id="parent_name"
+                    placeholder="Enter parent name">
+                @error('parent_name')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
 
-                <button type="submit" class="btn btn-warning">
-                    <i class="fas fa-edit"></i>
-                    Update</button>
+            <button type="submit" class="btn btn-warning">
+                <i class="fas fa-edit"></i>
+                Update</button>
 
-            </form>
-        </div>
+        </form>
+    </div>
 
-    </livewire:content-card-page>
-</div>
+</livewire:content-card-page>

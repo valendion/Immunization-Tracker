@@ -1,4 +1,4 @@
-<script>
+<script data-navigate-once>
     document.addEventListener('livewire:init', function() {
         // CEK FLASH SESSION DARI REDIRECT
         @if (session()->has('swal'))

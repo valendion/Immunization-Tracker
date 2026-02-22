@@ -5,13 +5,16 @@ use App\Constants\AppConstants;
 use App\Models\Facility;
 use Livewire\Attributes\Url;
 use Illuminate\Validation\ValidationException;
-new class extends Component {
-    public $title = AppConstants::DATA_VACCINE;
+use Livewire\Attributes\Title;
+new #[Title('Edit Facility')] class extends Component {
+    public $title = AppConstants::DATA_FACILITY;
     public $sub_title = AppConstants::UPDATE;
 
     public $name = '';
 
     public $address = '';
+
+    public $icon = 'building';
 
     #[Url]
     public $id;
@@ -64,44 +67,43 @@ new class extends Component {
 };
 ?>
 
-<div>
-    <livewire:content-card-page :title="$title">
-        <div class="card-header">
-            <h4>{{ $this->sub_title }}</h4>
-        </div>
 
-        <div class="card-body">
-            <form wire:submit.prevent="update">
+<livewire:content-card-page :title="$title" :icon="$icon">
+    <div class="card-header">
+        <h4>{{ $this->sub_title }}</h4>
+    </div>
 
-                {{-- NAME --}}
-                <div class="form-group">
-                    <label for="name">Name <span class="text-danger">*</span></label>
-                    <input type="text" wire:model.live.blur="name"
-                        class="form-control @error('name') is-invalid @enderror" placeholder="Enter name">
+    <div class="card-body">
+        <form wire:submit.prevent="update">
 
-                    @error('name')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- NAME --}}
+            <div class="form-group">
+                <label for="name">Name <span class="text-danger">*</span></label>
+                <input type="text" wire:model.live.blur="name" class="form-control @error('name') is-invalid @enderror"
+                    placeholder="Enter name">
 
-                {{-- ADDRESS --}}
-                <div class="form-group">
-                    <label for="address">Address <span class="text-danger">*</span></label>
-                    <textarea wire:model.live.blur="address" class="form-control @error('address') is-invalid @enderror"
-                        placeholder="Enter address"></textarea>
+                @error('name')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
-                    @error('address')
-                        <small class="text-danger mt-1">{{ $message }}</small>
-                    @enderror
-                </div>
+            {{-- ADDRESS --}}
+            <div class="form-group">
+                <label for="address">Address <span class="text-danger">*</span></label>
+                <textarea wire:model.live.blur="address" class="form-control @error('address') is-invalid @enderror"
+                    placeholder="Enter address"></textarea>
+
+                @error('address')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
 
 
-                <button type="submit" class="btn btn-warning">
-                    <i class="fas fa-edit"></i>
-                    Update</button>
+            <button type="submit" class="btn btn-warning">
+                <i class="fas fa-edit"></i>
+                Update</button>
 
-            </form>
-        </div>
+        </form>
+    </div>
 
-    </livewire:content-card-page>
-</div>
+</livewire:content-card-page>

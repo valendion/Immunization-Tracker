@@ -5,9 +5,12 @@ use Livewire\Component;
 new class extends Component {
     public $title;
 
-    public function mount($title = null)
+    public $icon;
+
+    public function mount($title = null, $icon = null)
     {
         $this->title = $title;
+        $this->icon = $icon;
     }
 };
 ?>
@@ -20,7 +23,7 @@ new class extends Component {
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1>
-                        <i class="fas fa-user mr-1"></i>
+                        <i class="fas fa-{{ $icon }} mr-1"></i>
                         {{ $title }}
 
                     </h1>
@@ -36,7 +39,7 @@ new class extends Component {
                                     DASHBOARD</a></li>
                             <li class="breadcrumb-item ">
 
-                                <i class="fas fa-user mr-1"></i>
+                                <i class="fas fa-{{ $icon }} mr-1"></i>
                                 {{ $title }}
                         @endif
 

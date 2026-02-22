@@ -2,10 +2,10 @@
 
 use Livewire\Component;
 use App\Constants\AppConstants;
-
-new class extends Component {
+use Livewire\Attributes\Title;
+new #[Title('All Facilities')] class extends Component {
     public $title = AppConstants::DATA_FACILITY;
-
+    public $icon = 'building';
     public function moveToCreate()
     {
         return $this->redirect(url: '/superadmin/facility/create', navigate: true);
@@ -13,7 +13,7 @@ new class extends Component {
 };
 ?>
 
-<livewire:content-card-page :title="$title">
+<livewire:content-card-page :title="$title" :icon="$icon">
     <div class="card-header">
         <div class="d-flex justify-content-between">
             <div> <button wire:click="moveToCreate" class="btn btn-primary mr-1">
