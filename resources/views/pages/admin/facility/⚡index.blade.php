@@ -3,13 +3,12 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use Livewire\Attributes\Title;
-
-new #[Title('All Children')] class extends Component {
-    public $title = AppConstants::DATA_CHILD;
-    public $icon = 'users';
+new #[Title('All Facilities')] class extends Component {
+    public $title = AppConstants::DATA_FACILITY;
+    public $icon = 'building';
     public function moveToCreate()
     {
-        return $this->redirect(url: '/superadmin/child/create', navigate: true);
+        return $this->redirect(url: '/admin/facility/create', navigate: true);
     }
 };
 ?>
@@ -21,12 +20,12 @@ new #[Title('All Children')] class extends Component {
                     <i class="fas fa-plus mr-1"></i>
                     Add data</button>
             </div>
-            <livewire:print-button />
+
         </div>
     </div>
 
     <div class="card-body">
-        <livewire:child.table />
+        <livewire:facility.table />
     </div>
 
 </livewire:content-card-page>

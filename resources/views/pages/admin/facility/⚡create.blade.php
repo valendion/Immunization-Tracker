@@ -3,12 +3,12 @@
 use Livewire\Component;
 use App\Constants\AppConstants;
 use App\Models\Facility;
-use Livewire\Attributes\Url;
-use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Title;
-new #[Title('Edit Facility')] class extends Component {
+use Illuminate\Validation\ValidationException;
+
+new #[Title('Create Facility')] class extends Component {
     public $title = AppConstants::DATA_FACILITY;
-    public $sub_title = AppConstants::UPDATE;
+    public $sub_title = AppConstants::CREATE;
 
     public $name = '';
 
@@ -16,31 +16,19 @@ new #[Title('Edit Facility')] class extends Component {
 
     public $icon = 'building';
 
-    #[Url]
-    public $id;
-
-    public Facility $facility;
-
-    public function mount()
-    {
-        $this->facility = Facility::findOrFail($this->id);
-
-        $this->name = $this->facility->name;
-        $this->address = $this->facility->address;
-    }
-
-    public function update()
+    public function create()
     {
         try {
             $this->validate([
-                'name' => 'required|min:3|unique:facilities,name,' . $this->id,
+                'name' => 'required|min:3|unique:facilities,name',
                 'address' => 'required|min:5',
             ]);
 
-            $this->facility->update([
-                'name' => $this->name,
-                'address' => $this->address,
-            ]);
+            $facility = new Facility();
+            $facility->name = $this->name;
+            $facility->address = $this->address;
+
+            $facility->save();
 
             $this->resetValidation();
             $this->reset();
@@ -48,14 +36,15 @@ new #[Title('Edit Facility')] class extends Component {
             session()->flash('swal', [
                 'icon' => 'success',
                 'title' => 'Success!',
-                'message' => 'Facility Successfuly Updated',
+                'message' => 'Facility Successfuly Added',
                 'timer' => 2000,
             ]);
 
-            $this->redirect('/superadmin/facility');
+            $this->redirect('/admin/facility');
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
+            // ALERT - Error
             session()->flash('swal', [
                 'icon' => 'error',
                 'title' => 'Failed!',
@@ -67,19 +56,19 @@ new #[Title('Edit Facility')] class extends Component {
 };
 ?>
 
-
 <livewire:content-card-page :title="$title" :icon="$icon">
+
     <div class="card-header">
         <h4>{{ $this->sub_title }}</h4>
     </div>
 
     <div class="card-body">
-        <form wire:submit.prevent="update">
+        <form wire:submit.prevent="create">
 
             {{-- NAME --}}
             <div class="form-group">
                 <label for="name">Name <span class="text-danger">*</span></label>
-                <input type="text" wire:model.live.blur="name" class="form-control @error('name') is-invalid @enderror"
+                <input type="text" wire:model="name" class="form-control @error('name') is-invalid @enderror"
                     placeholder="Enter name">
 
                 @error('name')
@@ -90,18 +79,17 @@ new #[Title('Edit Facility')] class extends Component {
             {{-- ADDRESS --}}
             <div class="form-group">
                 <label for="address">Address <span class="text-danger">*</span></label>
-                <textarea wire:model.live.blur="address" class="form-control @error('address') is-invalid @enderror"
-                    placeholder="Enter address"></textarea>
+                <textarea wire:model="address" class="form-control @error('address') is-invalid @enderror" placeholder="Enter address"></textarea>
 
                 @error('address')
                     <small class="text-danger mt-1">{{ $message }}</small>
                 @enderror
             </div>
 
-
-            <button type="submit" class="btn btn-warning">
-                <i class="fas fa-edit"></i>
-                Update</button>
+            {{-- SUBMIT --}}
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save mr-1"></i> Save
+            </button>
 
         </form>
     </div>

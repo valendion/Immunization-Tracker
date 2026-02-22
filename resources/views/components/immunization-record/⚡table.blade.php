@@ -35,7 +35,7 @@ new class extends Component {
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('superadmin.immunization-record.edit', ['id' => $id]);
+        $this->redirectRoute('admin.immunization-record.edit', ['id' => $id]);
     }
 
     public function delete($id)

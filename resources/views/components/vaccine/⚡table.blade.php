@@ -32,7 +32,7 @@ new class extends Component {
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('superadmin.vaccine.edit', ['id' => $id]);
+        $this->redirectRoute('admin.vaccine.edit', ['id' => $id]);
     }
 
     public function delete($id)

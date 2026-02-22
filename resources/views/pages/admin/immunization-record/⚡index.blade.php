@@ -8,7 +8,7 @@ new #[Title('All Immunization Records')] class extends Component {
     public $icon = 'file';
     public function moveToCreate()
     {
-        return $this->redirect(url: '/superadmin/immunization-record/create', navigate: true);
+        return $this->redirect(url: '/admin/immunization-record/create', navigate: true);
     }
 };
 ?>
@@ -20,7 +20,7 @@ new #[Title('All Immunization Records')] class extends Component {
                     <i class="fas fa-plus mr-1"></i>
                     Add data</button>
             </div>
-            <livewire:print-button />
+
         </div>
     </div>
 

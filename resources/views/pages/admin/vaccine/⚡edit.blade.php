@@ -61,7 +61,7 @@ new #[Title('Edit Vaccine')] class extends Component {
                 'timer' => 2000,
             ]);
 
-            $this->redirect('/superadmin/vaccine');
+            $this->redirect('/admin/vaccine');
         } catch (ValidationException $e) {
             throw $e; // biarkan Livewire menangani validasinya
         } catch (\Exception $e) {

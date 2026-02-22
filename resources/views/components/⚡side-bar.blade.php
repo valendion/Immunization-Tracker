@@ -37,7 +37,7 @@ new class extends Component {
                 @if (auth()->user()->role === 'admin')
                     <li class="nav-header">Menu Admin</li>
                     <li class="nav-item">
-                        <a wire:navigate href="{{ route('superadmin.vaccine.index') }}" class="nav-link "
+                        <a wire:navigate href="{{ route('admin.vaccine.index') }}" class="nav-link "
                             wire:current="active">
                             <i class="nav-icon fas fa-syringe"></i>
                             <p>
@@ -47,7 +47,7 @@ new class extends Component {
                     </li>
 
                     <li class="nav-item">
-                        <a wire:navigate href="{{ route('superadmin.facility.index') }}" class="nav-link"
+                        <a wire:navigate href="{{ route('admin.facility.index') }}" class="nav-link"
                             wire:current="active">
                             <i class="nav-icon fas fa-building"></i>
                             <p>
@@ -57,8 +57,8 @@ new class extends Component {
                     </li>
 
                     <li class="nav-item">
-                        <a wire:navigate hr class="nav-link" href="{{ route('superadmin.child.index') }}"
-                            class="nav-link" wire:current="active">
+                        <a wire:navigate hr class="nav-link" href="{{ route('admin.child.index') }}" class="nav-link"
+                            wire:current="active">
                             <i class="nav-icon fas fa-users"></i>
                             <p>
                                 Child
@@ -67,12 +67,21 @@ new class extends Component {
                     </li>
 
                     <li class="nav-item">
-                        <a wire:navigate hr class="nav-link" href="{{ route('superadmin.immunization-record.index') }}"
+                        <a wire:navigate hr class="nav-link" href="{{ route('admin.immunization-record.index') }}"
                             class="nav-link" wire:current="active">
                             <i class="nav-icon fas fa-file"></i>
 
                             <p>
                                 Immunization Record </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a wire:navigate hr class="nav-link" href="{{ route('immunization-record-view') }}"
+                            class="nav-link" wire:current="active">
+                            <i class="nav-icon fas fa-eye"></i>
+
+                            <p>
+                                Immunization View</p>
                         </a>
                     </li>
                 @endif

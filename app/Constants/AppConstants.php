@@ -8,10 +8,10 @@ class AppConstants
     public const DATA_FACILITY = 'DATA FACILITY';
     public const DATA_CHILD    = 'DATA CHILD';
 
-    public const DATA_IMMUNIZATION_RECORD = 'DATA IMMUNIZATION RECORD';
-
-    public const DASHBOARD                 = 'DASHBOARD';
-    public const TOTAL_IMMUNIZATION_RECORD = 'TOTAL IMMUNIZATION RECORD';
+    public const DATA_IMMUNIZATION_RECORD      = 'DATA IMMUNIZATION RECORD';
+    public const DATA_IMMUNIZATION_RECORD_VIEW = 'DATA IMMUNIZATION RECORD VIEW';
+    public const DASHBOARD                     = 'DASHBOARD';
+    public const TOTAL_IMMUNIZATION_RECORD     = 'TOTAL IMMUNIZATION RECORD';
 
     public const CREATE = 'CREATE';
 

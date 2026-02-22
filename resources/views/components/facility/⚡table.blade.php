@@ -29,7 +29,7 @@ new class extends Component {
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('superadmin.facility.edit', ['id' => $id]);
+        $this->redirectRoute('admin.facility.edit', ['id' => $id]);
     }
 
     public function delete($id)

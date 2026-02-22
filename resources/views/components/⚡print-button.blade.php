@@ -8,7 +8,7 @@ new class extends Component {
 ?>
 
 <div>
-    <div class="btn-group dropleft">
+    <div class="btn-group dropright">
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
             Cetak
         </button>

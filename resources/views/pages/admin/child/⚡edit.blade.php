@@ -76,7 +76,7 @@ new #[Title('Edit Child')] class extends Component {
                 'timer' => 2000,
             ]);
 
-            $this->redirect('/superadmin/child');
+            $this->redirect('/admin/child');
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {

@@ -62,7 +62,7 @@ new #[Title('Create Child')] class extends Component {
                 'timer' => 2000,
             ]);
 
-            $this->redirect('/superadmin/child');
+            $this->redirect('/admin/child');
         } catch (ValidationException $e) {
             throw $e; // biarkan Livewire menangani validasinya
         } catch (\Exception $e) {

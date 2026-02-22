@@ -8,31 +8,33 @@ Route::livewire('login', 'pages::login')
 Route::middleware(['role:admin'])->group(function () {
     Route::livewire('/', 'pages::dashboard')->name('dashboard');
 
-    Route::livewire('/superadmin/vaccine', 'pages::superadmin.vaccine')
-        ->name('superadmin.vaccine.index');
-    Route::livewire('/superadmin/vaccine/create', 'pages::superadmin.vaccine.create')
-        ->name('superadmin.vaccine.create');
-    Route::livewire('/superadmin/vaccine/{id}/edit', 'pages::superadmin.vaccine.edit')
-        ->name('superadmin.vaccine.edit');
+    Route::livewire('/admin/vaccine', 'pages::admin.vaccine')
+        ->name('admin.vaccine.index');
+    Route::livewire('/admin/vaccine/create', 'pages::admin.vaccine.create')
+        ->name('admin.vaccine.create');
+    Route::livewire('/admin/vaccine/{id}/edit', 'pages::admin.vaccine.edit')
+        ->name('admin.vaccine.edit');
 
-    Route::livewire('/superadmin/facility', 'pages::superadmin.facility')
-        ->name('superadmin.facility.index');
-    Route::livewire('/superadmin/facility/create', 'pages::superadmin.facility.create')
-        ->name('superadmin.facility.create');
-    Route::livewire('superadmin/facility/{id}/edit', 'pages::superadmin.facility.edit')
-        ->name('superadmin.facility.edit');
+    Route::livewire('/admin/facility', 'pages::admin.facility')
+        ->name('admin.facility.index');
+    Route::livewire('/admin/facility/create', 'pages::admin.facility.create')
+        ->name('admin.facility.create');
+    Route::livewire('admin/facility/{id}/edit', 'pages::admin.facility.edit')
+        ->name('admin.facility.edit');
 
-    Route::livewire('/superadmin/child', 'pages::superadmin.child')
-        ->name('superadmin.child.index');
-    Route::livewire('/superadmin/child/create', 'pages::superadmin.child.create')
-        ->name('superadmin.child.create');
-    Route::livewire('superadmin/child/{id}/edit', 'pages::superadmin.child.edit')
-        ->name('superadmin.child.edit');
+    Route::livewire('/admin/child', 'pages::admin.child')
+        ->name('admin.child.index');
+    Route::livewire('/admin/child/create', 'pages::admin.child.create')
+        ->name('admin.child.create');
+    Route::livewire('admin/child/{id}/edit', 'pages::admin.child.edit')
+        ->name('admin.child.edit');
 
-    Route::livewire('/superadmin/immunization-record', 'pages::superadmin.immunization-record')
-        ->name('superadmin.immunization-record.index');
-    Route::livewire('/superadmin/immunization-record/create', 'pages::superadmin.immunization-record.create')
-        ->name('superadmin.immunization-record.create');
-    Route::livewire('superadmin/immunization-record/{id}/edit', 'pages::superadmin.immunization-record.edit')
-        ->name('superadmin.immunization-record.edit');
+    Route::livewire('/admin/immunization-record', 'pages::admin.immunization-record')
+        ->name('admin.immunization-record.index');
+    Route::livewire('/admin/immunization-record/create', 'pages::admin.immunization-record.create')
+        ->name('admin.immunization-record.create');
+    Route::livewire('admin/immunization-record/{id}/edit', 'pages::admin.immunization-record.edit')
+        ->name('admin.immunization-record.edit');
+    Route::livewire('/immunization-record-view', 'pages::immunization-record-view')
+        ->name('immunization-record-view');
 });

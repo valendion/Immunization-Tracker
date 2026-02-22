@@ -69,7 +69,7 @@ new #[Title('Create Immunization Record')] class extends Component {
                 'timer' => 2000,
             ]);
 
-            return $this->redirect('/superadmin/immunization-record');
+            return $this->redirect('/admin/immunization-record');
         } catch (ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {
