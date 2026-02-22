@@ -5,7 +5,9 @@ use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
 use App\Models\ImmunizationRecord;
 use App\Models\Facility;
+use App\Exports\ImmunizationExport;
 use App\Constants\AppConstants;
+use Maatwebsite\Excel\Facades\Excel;
 new class extends Component {
     use WithPagination;
 
@@ -20,6 +22,11 @@ new class extends Component {
     public $date;
 
     public $facilities = [];
+
+    protected $listeners = [
+        'export-excel' => 'exportExcel',
+        'export-pdf' => 'exportPdf',
+    ];
 
     public function mount()
     {
@@ -100,6 +107,13 @@ new class extends Component {
 
         return $childIdsPaginated;
     }
+
+    public function exportExcel()
+    {
+        $fileName = "immunization-{$this->date}.xlsx";
+
+        return Excel::download(new ImmunizationExport($this->facility_id, $this->date, $this->search), $fileName);
+    }
 };
 ?>
 <div>
@@ -149,7 +163,7 @@ new class extends Component {
                     <th>Name Vaccine</th>
                     <th>Date Given</th>
                     <th>Officer Name</th>
-                    <th><i class="fas fa-cog"></i></th>
+
                 </tr>
             </thead>
 
@@ -169,11 +183,7 @@ new class extends Component {
                         <td>{{ $item->date }}</td>
                         <td>{{ $item->officer }}</td>
 
-                        <td>
-                            <button class="btn btn-sm btn-info mr-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
+
                     </tr>
                 @endforeach
             </tbody>
