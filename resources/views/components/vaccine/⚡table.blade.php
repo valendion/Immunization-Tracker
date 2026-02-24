@@ -6,7 +6,8 @@ use Livewire\WithPagination;
 use App\Models\Vaccine;
 use Livewire\Attributes\On;
 use App\Constants\AppConstants;
-new class extends Component {
+use Livewire\Attributes\Lazy;
+new #[Lazy] class extends Component {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
 
@@ -51,6 +52,10 @@ new class extends Component {
 };
 ?>
 
+@placeholder
+    <livewire:loading-general />
+@endplaceholder
+
 <div>
     <div class="mb-3 d-flex justify-content-between">
         <div class="col-2">
@@ -88,9 +93,7 @@ new class extends Component {
                         <td>{{ $item->type }}</td>
                         <td>{{ $item->min_age_months }}</td>
                         <td>
-                            <button class="btn btn-sm btn-info mr-1">
-                                <i class="fas fa-eye"></i>
-                            </button>
+
                             <button wire:click="moveToEdit({{ $item->id }})" class="btn btn-sm btn-warning mr-1">
                                 <i class="fas fa-edit"></i>
                             </button>
