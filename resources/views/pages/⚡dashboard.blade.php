@@ -5,6 +5,7 @@ use App\Constants\AppConstants;
 use App\Models\ImmunizationRecord;
 use Illuminate\Support\Carbon;
 use Livewire\Attributes\Computed;
+
 new class extends Component {
     public $title = AppConstants::DASHBOARD;
     public $sub_title = AppConstants::TOTAL_IMMUNIZATION_RECORD;
@@ -37,7 +38,7 @@ new class extends Component {
     {
         $date = Carbon::parse($this->date);
 
-        $this->counts['BCG'] = ImmunizationRecord::whereDate('date_given', $date)->whereHas('vaccine', fn($q) => $q->where('name', 'like', 'BSG%'))->count();
+        $this->counts['BCG'] = ImmunizationRecord::whereDate('date_given', $date)->whereHas('vaccine', fn($q) => $q->where('name', 'like', 'BCG%'))->count();
 
         $this->counts['POLIO'] = ImmunizationRecord::whereDate('date_given', $date)->whereHas('vaccine', fn($q) => $q->where('name', 'like', 'Polio%'))->count();
 
@@ -51,6 +52,10 @@ new class extends Component {
     }
 };
 ?>
+
+
+
+
 
 <livewire:content-card-page :title="$title" :icon="$icon">
 
@@ -68,81 +73,88 @@ new class extends Component {
 
 
     <div class="card-body">
-        <div class="row">
+        <div wire:loading.remove wire:target="date">
 
-            <!-- BCG -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-dark"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">BCG</span>
-                        <span class="info-box-number">{{ $counts['BCG'] }} babies</span>
+            <div class="row">
+
+                <!-- BCG -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-dark"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">BCG</span>
+                            <span class="info-box-number">{{ $counts['BCG'] }} babies</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- POLIO -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-primary"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">POLIO</span>
-                        <span class="info-box-number">{{ $counts['POLIO'] }} babies</span>
+                <!-- POLIO -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-primary"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">POLIO</span>
+                            <span class="info-box-number">{{ $counts['POLIO'] }} babies</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- DPT -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-secondary"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">DPT</span>
-                        <span class="info-box-number">{{ $counts['DPT'] }} babies</span>
+                <!-- DPT -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-secondary"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">DPT</span>
+                            <span class="info-box-number">{{ $counts['DPT'] }} babies</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- PCV -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-success"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">PCV</span>
+                            <span class="info-box-number">{{ $counts['PCV'] }} babies</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- PCV -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-success"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">PCV</span>
-                        <span class="info-box-number">{{ $counts['PCV'] }} babies</span>
+
+            <div class="row">
+
+                <!-- ROTA -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-danger"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">ROTA</span>
+                            <span class="info-box-number">{{ $counts['ROTA'] }} babies</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MR -->
+                <div class="col-lg-3 col-6">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-warning"><i class="fas fa-syringe"></i></span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">CAMPAK/MR</span>
+                            <span class="info-box-number">{{ $counts['MR'] }} babies</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-
-        <div class="row">
-
-            <!-- ROTA -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-danger"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">ROTA</span>
-                        <span class="info-box-number">{{ $counts['ROTA'] }} babies</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MR -->
-            <div class="col-lg-3 col-6">
-                <div class="info-box">
-                    <span class="info-box-icon bg-warning"><i class="fas fa-syringe"></i></span>
-                    <div class="info-box-content">
-                        <span class="info-box-text">CAMPAK/MR</span>
-                        <span class="info-box-number">{{ $counts['MR'] }} babies</span>
-                    </div>
-                </div>
-            </div>
-
+        <div class="w-100" wire:loading wire:target="date">
+            <livewire:loading-general />
         </div>
-
     </div>
+
 
 </livewire:content-card-page>

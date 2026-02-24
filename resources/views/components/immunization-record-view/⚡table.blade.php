@@ -8,7 +8,9 @@ use App\Models\Facility;
 use App\Exports\ImmunizationExport;
 use App\Constants\AppConstants;
 use Maatwebsite\Excel\Facades\Excel;
-new class extends Component {
+use Livewire\Attributes\Lazy;
+
+new #[Lazy] class extends Component {
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
@@ -116,6 +118,10 @@ new class extends Component {
     }
 };
 ?>
+
+@placeholder
+    <livewire:loading-general />
+@endplaceholder
 <div>
     <div class="mb-3 d-flex justify-content-between">
 

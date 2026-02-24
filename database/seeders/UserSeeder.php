@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
                 'name'     => 'Bang admin',
                 'email'    => 'admin@gmail.com',
                 'role'     => 'admin',
-                'password' => bcrypt('789012'),
+                'password' => bcrypt('immunizationdion123'),
             ],
         ];
 
