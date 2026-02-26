@@ -68,7 +68,7 @@ new #[Lazy] class extends Component {
 
 
         <div class="col-6">
-            <input type="text" class="form-control" placeholder="Pencarian..." wire:model.live="search">
+            <input type="text" class="form-control" placeholder="Search..." wire:model.live="search">
         </div>
     </div>
 
@@ -94,7 +94,7 @@ new #[Lazy] class extends Component {
                         <td>{{ $item->nik }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->gender }}</td>
-                        <td>{{ $item->date_of_birth }}</td>
+                        <td>{{ date('d-m-Y', strtotime($item->date_of_birth)) }}</td>
                         <td>{{ $item->address }}</td>
                         <td>{{ $item->parent_name }}</td>
                         <td>

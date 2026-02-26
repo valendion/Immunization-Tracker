@@ -18,7 +18,7 @@ new class extends Component {
 <div>
     <div class="btn-group dropright">
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
-            Cetak
+            Print
         </button>
 
         <div class="dropdown-menu">

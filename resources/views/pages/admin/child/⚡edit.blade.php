@@ -40,8 +40,8 @@ new #[Title('Edit Child')] class extends Component {
         $this->nik = $this->child->nik;
         $this->name = $this->child->name;
         $this->gender = $this->child->gender;
-        $this->date_of_birth = Carbon::parse($this->child->date_of_birth)->format('Y-m-d');
         $this->address = $this->child->address;
+        $this->date_of_birth = $this->child->date_of_birth->toDateString();
         $this->parent_name = $this->child->parent_name;
     }
 

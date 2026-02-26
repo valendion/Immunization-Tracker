@@ -154,7 +154,7 @@ new #[Lazy] class extends Component {
 
         {{-- SEARCH --}}
         <div class="col-3">
-            <input type="text" class="form-control" placeholder="Pencarian..." wire:model.live="search">
+            <input type="text" class="form-control" placeholder="Search..." wire:model.live="search">
         </div>
     </div>
 

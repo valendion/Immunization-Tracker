@@ -9,8 +9,8 @@ use App\Models\Vaccine;
 use Livewire\Attributes\Url;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Carbon;
 use Livewire\Attributes\Title;
+
 new #[Title('Edit Immunization Record')] class extends Component {
     public $title = AppConstants::DATA_IMMUNIZATION_RECORD;
     public $sub_title = AppConstants::UPDATE;
@@ -38,7 +38,7 @@ new #[Title('Edit Immunization Record')] class extends Component {
         // SET NILAI AWAL KE DALAM FORM
         $this->child_id = $this->immunizationRecord->child_id;
         $this->vaccine_id = $this->immunizationRecord->vaccine_id;
-        $this->date_given = Carbon::parse($this->immunizationRecord->date_given)->format('Y-m-d');
+        $this->date_given = $this->immunizationRecord->date_given->toDateString();
         $this->health_facility_id = $this->immunizationRecord->health_facility_id;
         $this->officer_name = $this->immunizationRecord->officer_name;
 
