@@ -185,8 +185,8 @@ new #[Lazy] class extends Component {
                                 <span class="badge badge-primary">{{ $v }}</span>
                             @endforeach
                         </td>
+                        <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
 
-                        <td>{{ $item->date }}</td>
                         <td>{{ $item->officer }}</td>
 
 
