@@ -63,7 +63,7 @@ class ImmunizationExport implements FromArray, WithHeadings
                 $items->first()->child->name,
                 $items->first()->facility->name,
                 implode(', ', $items->pluck('vaccine.name')->toArray()),
-                $items->first()->date_given,
+                date('d-m-Y', strtotime($items->first()->date_given)),
                 $items->first()->officer_name,
             ];
         }

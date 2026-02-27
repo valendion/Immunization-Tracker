@@ -28,6 +28,8 @@ Route::middleware(['role:admin'])->group(function () {
         ->name('admin.child.create');
     Route::livewire('admin/child/{id}/edit', 'pages::admin.child.edit')
         ->name('admin.child.edit');
+    Route::livewire('admin/child/{id}/read', 'pages::admin.child.read')
+        ->name('admin.child.read');
 
     Route::livewire('/admin/immunization-record', 'pages::admin.immunization-record')
         ->name('admin.immunization-record.index');

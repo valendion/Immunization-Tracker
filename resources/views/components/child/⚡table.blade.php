@@ -7,6 +7,7 @@ use App\Models\Child;
 use Livewire\Attributes\On;
 use App\Constants\AppConstants;
 use Livewire\Attributes\Lazy;
+
 new #[Lazy] class extends Component {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
@@ -33,7 +34,12 @@ new #[Lazy] class extends Component {
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('admin.child.edit', ['id' => $id]);
+        $this->redirectRoute('admin.child.edit', ['id' => $id], navigate: true);
+    }
+
+    public function moveToRead($id)
+    {
+        $this->redirectRoute('admin.child.read', ['id' => $id], navigate: true);
     }
 
     public function delete($id)
@@ -98,7 +104,10 @@ new #[Lazy] class extends Component {
                         <td>{{ $item->address }}</td>
                         <td>{{ $item->parent_name }}</td>
                         <td>
-
+                            <button wire:click="moveToRead({{ $item->id }})" class="btn btn-sm btn-info mr-1"
+                                title="View Child Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
                             <button wire:click="moveToEdit({{ $item->id }})" class="btn btn-sm btn-warning mr-1">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -106,6 +115,7 @@ new #[Lazy] class extends Component {
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
+
                     </tr>
                 @endforeach
             </tbody>

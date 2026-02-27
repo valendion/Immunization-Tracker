@@ -93,7 +93,6 @@ new #[Title('Create Immunization Record')] class extends Component {
     <div class="card-body">
         <form wire:submit.prevent="create">
 
-
             {{-- CHILD --}}
             <div class="form-group">
                 <label>Child <span class="text-danger">*</span></label>

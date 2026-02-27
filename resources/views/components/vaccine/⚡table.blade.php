@@ -33,7 +33,7 @@ new #[Lazy] class extends Component {
 
     public function moveToEdit($id)
     {
-        $this->redirectRoute('admin.vaccine.edit', ['id' => $id]);
+        $this->redirectRoute('admin.vaccine.edit', ['id' => $id], navigate: true);
     }
 
     public function delete($id)
