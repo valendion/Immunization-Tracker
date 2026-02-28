@@ -81,7 +81,7 @@ new #[Lazy] class extends Component {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->facilities() ?? [] as $item)
+                @foreach ($this->facilities ?? [] as $item)
                     <tr>
                         <td>{{ $this->facilities->firstItem() + $loop->index }}</td>
                         <td>{{ $item->name }}</td>
@@ -101,6 +101,6 @@ new #[Lazy] class extends Component {
             </tbody>
         </table>
 
-        {{ $this->facilities()->links() }}
+        {{ $this->facilities->links() }}
     </div>
 </div>

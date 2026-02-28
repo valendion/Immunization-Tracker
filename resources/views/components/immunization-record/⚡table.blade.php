@@ -89,7 +89,7 @@ new #[Lazy] class extends Component {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->immunizationRecords() ?? [] as $item)
+                @foreach ($this->immunizationRecords ?? [] as $item)
                     <tr>
                         <td>{{ $this->immunizationRecords->firstItem() + $loop->index }}</td>
                         <td>{{ $item->child->name }}</td>
@@ -112,6 +112,6 @@ new #[Lazy] class extends Component {
             </tbody>
         </table>
 
-        {{ $this->immunizationRecords()->links() }}
+        {{ $this->immunizationRecords->links() }}
     </div>
 </div>
