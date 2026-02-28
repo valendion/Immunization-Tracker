@@ -6,8 +6,8 @@ use Livewire\WithPagination;
 use App\Models\Facility;
 use Livewire\Attributes\On;
 use App\Constants\AppConstants;
-
 use Livewire\Attributes\Lazy;
+
 new #[Lazy] class extends Component {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
@@ -37,7 +37,7 @@ new #[Lazy] class extends Component {
     public function delete($id)
     {
         $facility = Facility::findOrFail($id);
-        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Facilty', 'text' => "Do you really want to delete {$facility->name} facility?", 'icon' => 'warning']);
+        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Facility', 'text' => "Do you really want to delete {$facility->name} facility?", 'icon' => 'warning']);
     }
 
     #[On('confirmed-delete')]
@@ -45,7 +45,7 @@ new #[Lazy] class extends Component {
     {
         Facility::findOrFail($id)->delete();
 
-        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Facilty successfully deleted', 'timer' => 2000]);
+        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Facility successfully deleted', 'timer' => 2000]);
     }
 };
 ?>
@@ -68,12 +68,10 @@ new #[Lazy] class extends Component {
         </div>
     </div>
 
-
     <div class="table-responsive">
-        <table class="table  table-hover ">
+        <table class="table table-hover">
             <thead>
                 <tr>
-
                     <th>No</th>
                     <th>Name</th>
                     <th>Address</th>
@@ -81,14 +79,12 @@ new #[Lazy] class extends Component {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->facilities ?? [] as $item)
+                @forelse ($this->facilities ?? [] as $item)
                     <tr>
                         <td>{{ $this->facilities->firstItem() + $loop->index }}</td>
                         <td>{{ $item->name }}</td>
                         <td>{{ $item->address }}</td>
-
                         <td>
-
                             <button wire:click="moveToEdit({{ $item->id }})" class="btn btn-sm btn-warning mr-1">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -97,7 +93,14 @@ new #[Lazy] class extends Component {
                             </button>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            <i class="fas fa-hospital fa-2x mb-2 d-block"></i>
+                            No facilities available
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 

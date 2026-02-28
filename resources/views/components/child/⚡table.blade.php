@@ -72,12 +72,10 @@ new #[Lazy] class extends Component {
             </select>
         </div>
 
-
         <div class="col-6">
             <input type="text" class="form-control" placeholder="Search..." wire:model.live="search">
         </div>
     </div>
-
 
     <div class="table-responsive">
         <table class="table table-hover">
@@ -94,7 +92,7 @@ new #[Lazy] class extends Component {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->children ?? [] as $item)
+                @forelse ($this->children ?? [] as $item)
                     <tr>
                         <td>{{ $this->children->firstItem() + $loop->index }}</td>
                         <td>{{ $item->nik }}</td>
@@ -115,9 +113,15 @@ new #[Lazy] class extends Component {
                                 <i class="fas fa-trash"></i>
                             </button>
                         </td>
-
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="fas fa-child fa-2x mb-2 d-block"></i>
+                            No children available
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 

@@ -1,111 +1,13 @@
-<?php
-
-use Livewire\Component;
-use Livewire\Attributes\Computed;
-use Livewire\WithPagination;
-use App\Models\Vaccine;
-use Livewire\Attributes\On;
-use App\Constants\AppConstants;
-use Livewire\Attributes\Lazy;
-new #[Lazy] class extends Component {
-    use WithPagination;
-    protected $paginationTheme = 'bootstrap';
-
-    public $paginate = 10;
-    public $search = '';
-
-    public $paginationOptions = [];
-
-    public function mount()
-    {
-        $this->paginationOptions = AppConstants::PAGINATIONS;
-    }
-
-    #[Computed]
-    public function vaccines()
-    {
-        return Vaccine::where('name', 'like', '%' . $this->search . '%')
-            ->orWhere('description', 'like', '%' . $this->search . '%')
-            ->orWhere('type', 'like', '%' . $this->search . '%')
-            ->orderBy('min_age_months')
-            ->paginate($this->paginate);
-    }
-
-    public function moveToEdit($id)
-    {
-        $this->redirectRoute('admin.vaccine.edit', ['id' => $id], navigate: true);
-    }
-
-    public function delete($id)
-    {
-        $vaccine = Vaccine::findOrFail($id);
-        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Vaccine', 'text' => "Do you really want to delete {$vaccine->name} vaccine?", 'icon' => 'warning']);
-    }
-
-    #[On('confirmed-delete')]
-    public function confirmedDelete($id)
-    {
-        Vaccine::findOrFail($id)->delete();
-
-        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Vaccine successfully deleted', 'timer' => 2000]);
-    }
-};
-?>
-
-@placeholder
-    <livewire:loading-general />
-@endplaceholder
-
-<div>
-    <div class="mb-3 d-flex justify-content-between">
-        <div class="col-2">
-            <select wire:model.live="paginate" class="form-control">
-                @foreach ($this->paginationOptions as $value => $label)
-                    <option value="{{ $value }}">{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="col-6">
-            <input type="text" class="form-control" placeholder="Search..." wire:model.live="search">
-        </div>
-    </div>
-
-
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-
-                    <th>No</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>type</th>
-                    <th>Min Age Months</th>
-                    <th><i class="fas fa-cog"></i></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($this->vaccines ?? [] as $item)
-                    <tr>
-                        <td>{{ $this->vaccines->firstItem() + $loop->index }}</td>
-                        <td>{{ $item->name }}</td>
-                        <td>{{ $item->description }}</td>
-                        <td>{{ $item->type }}</td>
-                        <td>{{ $item->min_age_months }}</td>
-                        <td>
-
-                            <button wire:click="moveToEdit({{ $item->id }})" class="btn btn-sm btn-warning mr-1">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button wire:click="delete({{ $item->id }})" class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        {{ $this->vaccines->links() }}
-    </div>
-</div>
+@empty
+    <tr>
+        <td colspan="6">
+            <div class="text-center py-5">
+                <div class="mb-3">
+                    <i class="fas fa-syringe fa-3x text-muted opacity-50"></i>
+                </div>
+                <h5 class="text-muted">No vaccines found</h5>
+                <p class="text-muted small">Try adjusting your search or add new vaccine</p>
+            </div>
+        </td>
+    </tr>
+    @endforelse

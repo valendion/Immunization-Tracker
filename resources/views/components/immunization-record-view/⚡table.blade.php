@@ -122,6 +122,7 @@ new #[Lazy] class extends Component {
 @placeholder
     <livewire:loading-general />
 @endplaceholder
+
 <div>
     <div class="mb-3 d-flex justify-content-between">
 
@@ -136,13 +137,11 @@ new #[Lazy] class extends Component {
 
         {{-- DATE GIVEN --}}
         <div class="form-group">
-
             <input type="date" wire:model.live="date" class="form-control">
         </div>
 
         {{-- FACILITY (Select2) --}}
         <div class="form-group" wire:ignore>
-
             <select id="select_facility" class="form-control select2bs4" wire:model.live="facility_id">
                 @foreach ($facilities as $facility)
                     <option value="{{ $facility->id }}">
@@ -158,7 +157,6 @@ new #[Lazy] class extends Component {
         </div>
     </div>
 
-
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -169,36 +167,37 @@ new #[Lazy] class extends Component {
                     <th>Name Vaccine</th>
                     <th>Date Given</th>
                     <th>Officer Name</th>
-
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($this->immunizationRecords as $item)
+                @forelse ($this->immunizationRecords as $item)
                     <tr>
                         <td>{{ $this->immunizationRecords->firstItem() + $loop->index }}</td>
                         <td>{{ $item->child }}</td>
                         <td>{{ $item->facility }}</td>
-
                         <td>
                             @foreach ($item->vaccines as $v)
                                 <span class="badge badge-primary">{{ $v }}</span>
                             @endforeach
                         </td>
                         <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
-
                         <td>{{ $item->officer }}</td>
-
-
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fas fa-file-medical fa-2x mb-2 d-block"></i>
+                            No immunization records available
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
         {{ $this->immunizationRecords->links() }}
     </div>
 </div>
-
 
 @script
     <script>

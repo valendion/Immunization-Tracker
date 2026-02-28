@@ -30,7 +30,7 @@ new #[Lazy] class extends Component {
                     ->whereHas('child', fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
                     ->orWhereHas('vaccine', fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
                     ->orWhereHas('facility', fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
-                    ->orWhere('officer_name', 'like', '%' . $this->search . '%'); // <-- ditambahkan di sini
+                    ->orWhere('officer_name', 'like', '%' . $this->search . '%');
             })
             ->paginate($this->paginate);
     }
@@ -43,7 +43,7 @@ new #[Lazy] class extends Component {
     public function delete($id)
     {
         $immunization_record = ImmunizationRecord::findOrFail($id);
-        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Facilty', 'text' => "Do you really want to delete {$immunization_record->name} ImmunizationRecord?", 'icon' => 'warning']);
+        $this->dispatch('confirm-delete', ['id' => $id, 'title' => 'Delete Immunization Record', 'text' => "Do you really want to delete immunization record for {$immunization_record->child->name}?", 'icon' => 'warning']);
     }
 
     #[On('confirmed-delete')]
@@ -51,7 +51,7 @@ new #[Lazy] class extends Component {
     {
         ImmunizationRecord::findOrFail($id)->delete();
 
-        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Facilty successfully deleted', 'timer' => 2000]);
+        $this->dispatch('show-alert', ['icon' => 'success', 'title' => 'Deleted!', 'message' => 'Immunization record successfully deleted', 'timer' => 2000]);
     }
 };
 ?>
@@ -74,7 +74,6 @@ new #[Lazy] class extends Component {
         </div>
     </div>
 
-
     <div class="table-responsive">
         <table class="table table-hover">
             <thead>
@@ -89,7 +88,7 @@ new #[Lazy] class extends Component {
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->immunizationRecords ?? [] as $item)
+                @forelse ($this->immunizationRecords ?? [] as $item)
                     <tr>
                         <td>{{ $this->immunizationRecords->firstItem() + $loop->index }}</td>
                         <td>{{ $item->child->name }}</td>
@@ -97,9 +96,7 @@ new #[Lazy] class extends Component {
                         <td>{{ $item->facility->name }}</td>
                         <td>{{ date('d-m-Y', strtotime($item->date_given)) }}</td>
                         <td>{{ $item->officer_name }}</td>
-
                         <td>
-
                             <button wire:click="moveToEdit({{ $item->id }})" class="btn btn-sm btn-warning mr-1">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -108,7 +105,14 @@ new #[Lazy] class extends Component {
                             </button>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="fas fa-file-medical fa-2x mb-2 d-block"></i>
+                            No immunization records available
+                        </td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
 
