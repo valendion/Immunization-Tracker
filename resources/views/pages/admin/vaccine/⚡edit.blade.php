@@ -135,9 +135,15 @@ new #[Title('Edit Vaccine')] class extends Component {
             </div>
 
 
-            <button type="submit" class="btn btn-warning">
-                <i class="fas fa-edit"></i>
-                Update</button>
+            {{-- SUBMIT --}}
+            <button type="submit" class="btn btn-warning" wire:loading.attr="disabled" wire:target="update">
+                <span wire:loading.remove wire:target="update">
+                    <i class="fas fa-edit mr-1"></i> Update
+                </span>
+                <span wire:loading wire:target="update">
+                    <livewire:loading-general />
+                </span>
+            </button>
 
         </form>
     </div>

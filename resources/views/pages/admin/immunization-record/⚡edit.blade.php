@@ -190,8 +190,13 @@ new #[Title('Edit Immunization Record')] class extends Component {
             </div>
 
             {{-- SUBMIT --}}
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-1"></i> Save
+            <button type="submit" class="btn btn-warning" wire:loading.attr="disabled" wire:target="update">
+                <span wire:loading.remove wire:target="update">
+                    <i class="fas fa-edit mr-1"></i> Update
+                </span>
+                <span wire:loading wire:target="update">
+                    <livewire:loading-general />
+                </span>
             </button>
 
         </form>

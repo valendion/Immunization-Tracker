@@ -77,6 +77,7 @@ new #[Title('Create Child')] class extends Component {
 };
 ?>
 
+
 <livewire:content-card-page :title="$title" :icon="$icon">
 
     <div class="card-header">
@@ -152,8 +153,13 @@ new #[Title('Create Child')] class extends Component {
             </div>
 
             {{-- SUBMIT --}}
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save mr-1"></i> Save
+            <button type="submit" class="btn btn-primary" wire:loading.attr="disabled" wire:target="create">
+                <span wire:loading.remove wire:target="create">
+                    <i class="fas fa-save mr-1"></i> Save
+                </span>
+                <span wire:loading wire:target="create">
+                    <livewire:loading-general />
+                </span>
             </button>
 
         </form>
