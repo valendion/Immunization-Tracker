@@ -22,6 +22,7 @@ class ChildFactory extends Factory
             'date_of_birth' => fake()->dateTimeBetween('-5 years', 'now')->format('Y-m-d'),
             'address'       => fake()->address(),
             'parent_name'   => fake()->name(),
+            'contact'       => fake()->phoneNumber(),
         ];
     }
 }

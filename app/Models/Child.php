@@ -15,6 +15,7 @@ class Child extends Model
         'date_of_birth',
         'address',
         'parent_name',
+        'contact',
     ];
 
     protected $casts = [
@@ -26,5 +27,17 @@ class Child extends Model
     public function immunizationRecords()
     {
         return $this->hasMany(ImmunizationRecord::class);
+    }
+
+    public function scopeSearch($query, $term)
+    {
+        if (empty($term)) {
+            return $query;
+        }
+
+        return $query->whereFullText(
+            ['nik', 'name', 'address', 'parent_name', 'contact'],
+            $term
+        );
     }
 }

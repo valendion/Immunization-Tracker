@@ -6,25 +6,23 @@ use App\Models\Child;
 use Livewire\Attributes\Url;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Title;
+use App\Constants\PhoneFormat;
 new #[Title('Edit Child')] class extends Component {
-    public $title = AppConstants::DATA_VACCINE;
+    public $title = AppConstants::DATA_CHILD;
     public $sub_title = AppConstants::UPDATE;
+
     public $nik = '';
-
     public $name = '';
-
     public $gender = '';
-
     public $date_of_birth = '';
-
     public $address = '';
-
     public $parent_name = '';
 
+    public $contact_display = ''; // Untuk input field (tanpa 62)
+    public $contact = ''; // Untuk database (dengan 62)
+
     public $genderOptions = [];
-
     public Child $child;
-
     public $icon = 'users';
 
     #[Url]
@@ -42,6 +40,16 @@ new #[Title('Edit Child')] class extends Component {
         $this->address = $this->child->address;
         $this->date_of_birth = $this->child->date_of_birth->toDateString();
         $this->parent_name = $this->child->parent_name;
+
+        // Load contact dan format untuk display
+        $this->contact = $this->child->contact ?? '';
+        $this->contact_display = PhoneFormat::display($this->contact);
+    }
+
+    public function updatedContactDisplay($value)
+    {
+        $this->contact = PhoneFormat::format($value);
+        $this->contact_display = PhoneFormat::display($this->contact);
     }
 
     public function update()
@@ -54,6 +62,7 @@ new #[Title('Edit Child')] class extends Component {
                 'date_of_birth' => 'required|date|before_or_equal:today',
                 'address' => 'required|string|min:5|max:255',
                 'parent_name' => 'required|string|min:3|max:255',
+                'contact' => PhoneFormat::VALIDATION_RULE,
             ]);
 
             $this->child->update([
@@ -63,6 +72,7 @@ new #[Title('Edit Child')] class extends Component {
                 'date_of_birth' => $this->date_of_birth,
                 'address' => $this->address,
                 'parent_name' => $this->parent_name,
+                'contact' => $this->contact, // Format: 62xxxxxxxxxxx
             ]);
 
             $this->resetValidation();
@@ -138,6 +148,23 @@ new #[Title('Edit Child')] class extends Component {
                 <input type="date" wire:model="date_of_birth"
                     class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth">
                 @error('date_of_birth')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
+
+            {{-- PHONE NUMBER --}}
+            <div class="form-group">
+                <label for="contact_display">Phone Number <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">62</span>
+                    </div>
+                    <input type="tel" wire:model.blur="contact_display"
+                        class="form-control @error('contact') is-invalid @enderror" id="contact_display"
+                        placeholder="85xxxxxxxxx">
+                </div>
+                <small class="text-muted">Type 085xxxxxxxxx or 85xxxxxxxxx</small>
+                @error('contact')
                     <small class="text-danger mt-1">{{ $message }}</small>
                 @enderror
             </div>

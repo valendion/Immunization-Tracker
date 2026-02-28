@@ -5,7 +5,7 @@ use App\Constants\AppConstants;
 use App\Models\Child;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Title;
-
+use App\Constants\PhoneFormat;
 new #[Title('Create Child')] class extends Component {
     public $title = AppConstants::DATA_CHILD;
     public $sub_title = AppConstants::CREATE;
@@ -22,6 +22,10 @@ new #[Title('Create Child')] class extends Component {
 
     public $parent_name = '';
 
+    public $contact_display = ''; // Untuk input field (tanpa 62)
+
+    public $contact = ''; // Untuk database (dengan 62)
+
     public $genderOptions = [];
 
     public $icon = 'users';
@@ -29,6 +33,12 @@ new #[Title('Create Child')] class extends Component {
     public function mount()
     {
         $this->genderOptions = AppConstants::GENDERS;
+    }
+
+    public function updatedContactDisplay($value)
+    {
+        $this->contact = PhoneFormat::format($value); // Langsung pakai!
+        $this->contact_display = PhoneFormat::display($this->contact);
     }
 
     public function create()
@@ -41,6 +51,7 @@ new #[Title('Create Child')] class extends Component {
                 'date_of_birth' => 'required|date|before_or_equal:today',
                 'address' => 'required|string|min:5|max:255',
                 'parent_name' => 'required|string|min:3|max:255',
+                'contact' => PhoneFormat::VALIDATION_RULE, // Constant!
             ]);
 
             $child = new Child();
@@ -50,6 +61,7 @@ new #[Title('Create Child')] class extends Component {
             $child->date_of_birth = $this->date_of_birth;
             $child->address = $this->address;
             $child->parent_name = $this->parent_name;
+            $child->contact = $this->contact; // Format: 62xxxxxxxxxxx
             $child->save();
 
             $this->resetValidation();
@@ -64,7 +76,7 @@ new #[Title('Create Child')] class extends Component {
 
             $this->redirect('/admin/child');
         } catch (ValidationException $e) {
-            throw $e; // biarkan Livewire menangani validasinya
+            throw $e;
         } catch (\Exception $e) {
             session()->flash('swal', [
                 'icon' => 'error',
@@ -76,7 +88,6 @@ new #[Title('Create Child')] class extends Component {
     }
 };
 ?>
-
 
 <livewire:content-card-page :title="$title" :icon="$icon">
 
@@ -127,6 +138,23 @@ new #[Title('Create Child')] class extends Component {
                 <input type="date" wire:model="date_of_birth"
                     class="form-control @error('date_of_birth') is-invalid @enderror" id="date_of_birth">
                 @error('date_of_birth')
+                    <small class="text-danger mt-1">{{ $message }}</small>
+                @enderror
+            </div>
+
+            {{-- PHONE NUMBER --}}
+            <div class="form-group">
+                <label for="contact_display">Phone Number <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">62</span>
+                    </div>
+                    <input type="tel" wire:model.blur="contact_display"
+                        class="form-control @error('contact') is-invalid @enderror" id="contact_display"
+                        placeholder="85xxxxxxxxx">
+                </div>
+                <small class="text-muted">Type 085xxxxxxxxx or 85xxxxxxxxx</small>
+                @error('contact')
                     <small class="text-danger mt-1">{{ $message }}</small>
                 @enderror
             </div>
