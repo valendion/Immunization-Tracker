@@ -5,11 +5,14 @@ use App\Models\Child;
 use App\Models\ImmunizationRecord;
 use App\Models\Vaccine;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\Cache;
 
 new #[Title('Child Details')] class extends Component {
     public $childId;
     public $child = null;
     public $vaccineStatus = [];
+    public $stats = [];
 
     public function mount($id)
     {
@@ -28,33 +31,41 @@ new #[Title('Child Details')] class extends Component {
 
     public function loadVaccineStatus()
     {
-        // Ambil semua vaksin
-        $allVaccines = Vaccine::select('id', 'name', 'type', 'description')->get();
+        $vaccines = Cache::remember('vaccines_list', 3600, function () {
+            return Vaccine::all(['id', 'name', 'type', 'description']);
+        });
 
-        // Ambil record imunisasi anak ini
-        $childRecords = ImmunizationRecord::where('child_id', $this->childId)
-            ->with(['vaccine', 'facility'])
-            ->get()
-            ->keyBy('vaccine_id');
+        $records = ImmunizationRecord::where('child_id', $this->childId)->get()->keyBy('vaccine_id');
 
-        // Build status untuk setiap vaksin
-        $this->vaccineStatus = $allVaccines
-            ->map(function ($vaccine) use ($childRecords) {
-                $record = $childRecords->get($vaccine->id);
+        $this->vaccineStatus = $vaccines
+            ->map(function ($v) use ($records) {
+                $record = $records->get($v->id);
 
                 return [
-                    'vaccine_id' => $vaccine->id,
-                    'vaccine_name' => $vaccine->name,
-                    'vaccine_type' => $vaccine->type,
-                    'vaccine_description' => $vaccine->description,
+                    'vaccine_id' => $v->id,
+                    'vaccine_name' => $v->name,
+                    'vaccine_type' => $v->type,
+                    'vaccine_description' => $v->description,
                     'is_given' => $record ? true : false,
-                    'date_given' => $record ? $record->date_given->format('d/m/Y') : null,
-                    'facility_name' => $record ? $record->facility->name : null,
+                    'date_given' => $record && $record->date_given ? $record->date_given->format('d/m/Y') : null,
                     'officer_name' => $record ? $record->officer_name : null,
                     'record_id' => $record ? $record->id : null,
                 ];
             })
             ->toArray();
+
+        $given = collect($this->vaccineStatus)->where('is_given', true)->count();
+
+        $this->stats = [
+            'total' => count($this->vaccineStatus),
+            'given' => $given,
+            'pending' => count($this->vaccineStatus) - $given,
+        ];
+    }
+
+    public function goBack()
+    {
+        return redirect()->route('children.index');
     }
 };
 ?>
@@ -62,160 +73,150 @@ new #[Title('Child Details')] class extends Component {
 <livewire:content-card-page title="Child Details" icon="user">
 
     @if ($child)
-        <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">{{ $child->name }}</h4>
-
-            </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ $child->name }}</h4>
         </div>
 
         <div class="card-body">
-            <!-- Child Information Card -->
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <div class="card border-info">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-user mr-2"></i>Personal Information</h5>
+            <!-- Personal Info -->
+            <div class="card border-info mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-user mr-2"></i>Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td width="35%">NIK</td>
+                                    <td>: {{ $child->nik }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>: {{ $child->name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Gender</td>
+                                    <td>: {{ $child->gender }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Birth Date</td>
+                                    <td>: {{ $child->date_of_birth?->format('d-m-Y') }}</td>
+                                </tr>
+                            </table>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
-                                        <tr>
-                                            <td width="30%"><strong>NIK</strong></td>
-                                            <td>: {{ $child->nik }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Name</strong></td>
-                                            <td>: {{ $child->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Gender</strong></td>
-                                            <td>: {{ $child->gender }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Date of Birth</strong></td>
-                                            <td>: {{ date('d-m-Y', strtotime($child->date_of_birth)) }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-md-6">
-                                    <table class="table table-borderless table-sm">
-                                        <tr>
-                                            <td width="30%"><strong>Parent Name</strong></td>
-                                            <td>: {{ $child->parent_name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Address</strong></td>
-                                            <td>: {{ $child->address }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Contact</strong></td>
-                                            <td>: {{ $child->contact ?? '-' }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td width="35%">Parent</td>
+                                    <td>: {{ $child->parent_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Address</td>
+                                    <td>: {{ $child->address }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Contact</td>
+                                    <td>: {{ $child->contact ?? '-' }}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Vaccine Status Card -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card border-primary">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-syringe mr-2"></i>Immunization Status</h5>
+            <!-- Vaccine Status -->
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white d-flex justify-content-between">
+                    <h5 class="mb-0"><i class="fas fa-syringe mr-2"></i>Immunization Status</h5>
+                    <span class="badge badge-light text-primary">{{ $stats['given'] }}/{{ $stats['total'] }}</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="text-center" width="5%">#</th>
+                                <th width="30%">Vaccine</th>
+                                <th width="15%">Type</th>
+                                <th class="text-center" width="12%">Status</th>
+                                <th width="18%">Date</th>
+                                <th width="20%">Officer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($vaccineStatus as $index => $v)
+                                <tr class="{{ $v['is_given'] ? 'table-success' : '' }}">
+                                    <td class="text-center">{{ $index + 1 }}</td>
+                                    <td>
+                                        <strong>{{ $v['vaccine_name'] }}</strong>
+                                        @if ($v['vaccine_description'])
+                                            <br><small
+                                                class="text-muted">{{ Str::limit($v['vaccine_description'], 40) }}</small>
+                                        @endif
+                                    </td>
+                                    <td><span class="badge badge-info">{{ $v['vaccine_type'] }}</span></td>
+                                    <td class="text-center">
+                                        @if ($v['is_given'])
+                                            <span class="badge badge-success"><i
+                                                    class="fas fa-check mr-1"></i>Given</span>
+                                        @else
+                                            <span class="badge badge-warning"><i
+                                                    class="fas fa-clock mr-1"></i>Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $v['date_given'] ?? '-' }}</td>
+                                    <td>{{ $v['officer_name'] ?? '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">
+                                        <i class="fas fa-inbox fa-2x mb-2"></i><br>No vaccine data
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="card-footer bg-light">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                Total: <strong>{{ $stats['total'] }}</strong> |
+                                Given: <strong class="text-success">{{ $stats['given'] }}</strong> |
+                                Pending: <strong class="text-warning">{{ $stats['pending'] }}</strong>
+                            </small>
                         </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered mb-0">
-                                    <thead class="bg-light">
-                                        <tr>
-                                            <th width="5%" class="text-center">No</th>
-                                            <th width="25%">Vaccine Name</th>
-                                            <th width="15%">Type</th>
-                                            <th width="12%" class="text-center">Status</th>
-                                            <th width="15%">Date Given</th>
-                                            <th width="18%">Facility</th>
-                                            <th width="15%">Officer</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($vaccineStatus as $index => $vaccine)
-                                            <tr class="{{ $vaccine['is_given'] ? 'table-success' : '' }}">
-                                                <td class="text-center">{{ $index + 1 }}</td>
-                                                <td>
-                                                    <strong>{{ $vaccine['vaccine_name'] }}</strong>
-                                                    @if ($vaccine['vaccine_description'])
-                                                        <br><small
-                                                            class="text-muted">{{ Str::limit($vaccine['vaccine_description'], 50) }}</small>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $vaccine['vaccine_type'] }}</td>
-                                                <td class="text-center">
-                                                    @if ($vaccine['is_given'])
-                                                        <span class="badge badge-success px-3 py-2">
-                                                            <i class="fas fa-check mr-1"></i> Given
-                                                        </span>
-                                                    @else
-                                                        <span class="badge badge-warning px-3 py-2">
-                                                            <i class="fas fa-clock mr-1"></i> Pending
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $vaccine['date_given'] ?? '-' }}</td>
-                                                <td>{{ $vaccine['facility_name'] ?? '-' }}</td>
-                                                <td>{{ $vaccine['officer_name'] ?? '-' }}</td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="7" class="text-center py-4">
-                                                    <div class="text-muted">
-                                                        <i class="fas fa-inbox fa-2x mb-2"></i>
-                                                        <p>No vaccine data available</p>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-light">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <small class="text-muted">
-                                        Total Vaccines: <strong>{{ count($vaccineStatus) }}</strong> |
-                                        Given: <strong
-                                            class="text-success">{{ collect($vaccineStatus)->where('is_given', true)->count() }}</strong>
-                                        |
-                                        Pending: <strong
-                                            class="text-warning">{{ collect($vaccineStatus)->where('is_given', false)->count() }}</strong>
-                                    </small>
-                                </div>
-                                <div class="col-md-6 text-right">
-                                    <small class="text-muted">
-                                        <span class="badge badge-success mr-1">&nbsp;</span> Given
-                                        <span class="badge badge-warning ml-2 mr-1">&nbsp;</span> Pending
-                                    </small>
-                                </div>
-                            </div>
+                        <div class="col-md-6 text-right">
+                            <small class="text-muted">
+                                <span class="badge badge-success mr-1">&nbsp;</span>Given
+                                <span class="badge badge-warning ml-2 mr-1">&nbsp;</span>Pending
+                            </small>
                         </div>
                     </div>
                 </div>
             </div>
+
+            @if ($stats['total'] > 0)
+                @php $pct = ($stats['given'] / $stats['total']) * 100; @endphp
+                <div class="progress mt-3" style="height: 25px;">
+                    <div class="progress-bar bg-success" style="width: {{ $pct }}%">
+                        {{ round($pct) }}%
+                    </div>
+                </div>
+            @endif
         </div>
     @else
-        <div class="card-body">
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle mr-2"></i>
-                Child not found.
+        <div class="card-body text-center py-5">
+            <div class="alert alert-danger d-inline-block">
+                <i class="fas fa-exclamation-triangle mr-2"></i>Child not found.
             </div>
-            <button wire:click="goBack" class="btn btn-secondary">
-                <i class="fas fa-arrow-left mr-1"></i> Back to List
-            </button>
+            <div class="mt-3">
+                <button wire:click="goBack" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left mr-1"></i>Back to List
+                </button>
+            </div>
         </div>
     @endif
 
