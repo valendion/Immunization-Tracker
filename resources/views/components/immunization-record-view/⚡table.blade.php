@@ -9,6 +9,7 @@ use App\Exports\ImmunizationExport;
 use App\Constants\AppConstants;
 use Maatwebsite\Excel\Facades\Excel;
 use Livewire\Attributes\Lazy;
+use Illuminate\Support\Facades\Cache;
 
 new #[Lazy] class extends Component {
     use WithPagination;
@@ -34,25 +35,40 @@ new #[Lazy] class extends Component {
     {
         $this->paginationOptions = AppConstants::PAGINATIONS;
 
-        // Ambil fasilitas
-        $this->facilities = Facility::orderBy('name')->get();
+        // Clear cache untuk memastikan data fresh
+        Cache::forget('facilities_list');
 
-        // Default facility = Lagaligo 1 (ID=1)
+        // Ambil data sebagai array dengan key value
+        $this->facilities = Facility::orderBy('name')->pluck('name', 'id')->toArray();
+
         $this->facility_id = 1;
+        $this->date = now()->format('Y-m-d');
+    }
 
-        // Default tanggal = hari ini
-        $this->date = date('Y-m-d');
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPaginate(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFacilityId(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDate(): void
+    {
+        $this->resetPage();
     }
 
     #[Computed]
     public function immunizationRecords()
     {
-        /*
-        |--------------------------------------------------------------------------
-        | 1) Ambil daftar anak (child_id) berdasar fasilitas & tanggal
-        |--------------------------------------------------------------------------
-        */
-        $childQuery = ImmunizationRecord::query()
+        $childIdsPaginated = ImmunizationRecord::query()
             ->select('child_id')
             ->where('health_facility_id', $this->facility_id)
             ->whereDate('date_given', $this->date)
@@ -60,52 +76,33 @@ new #[Lazy] class extends Component {
                 $query->whereHas('child', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
             })
             ->groupBy('child_id')
-            ->orderBy('child_id');
+            ->orderBy('child_id')
+            ->paginate($this->paginate);
 
-        // paginate per anak
-        $childIdsPaginated = $childQuery->paginate($this->paginate);
+        if ($childIdsPaginated->isEmpty()) {
+            return $childIdsPaginated;
+        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 2) Ambil imunisasi hanya untuk anak yang ada di halaman ini
-        |--------------------------------------------------------------------------
-        */
         $records = ImmunizationRecord::with(['child', 'vaccine', 'facility'])
             ->whereIn('child_id', $childIdsPaginated->pluck('child_id'))
             ->where('health_facility_id', $this->facility_id)
             ->whereDate('date_given', $this->date)
             ->get();
 
-        /*
-        |--------------------------------------------------------------------------
-        | 3) Group per anak
-        |--------------------------------------------------------------------------
-        */
-        $grouped = $records->groupBy('child_id');
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4) Bentuk object final (1 anak = 1 row)
-        |--------------------------------------------------------------------------
-        */
-        $final = $grouped
-            ->map(function ($items) {
-                return (object) [
+        $formatted = $records
+            ->groupBy('child_id')
+            ->map(
+                fn($items) => (object) [
                     'child' => $items->first()->child->name,
                     'facility' => $items->first()->facility->name,
                     'date' => $items->first()->date_given,
                     'officer' => $items->first()->officer_name,
                     'vaccines' => $items->pluck('vaccine.name')->toArray(),
-                ];
-            })
+                ],
+            )
             ->values();
 
-        /*
-        |--------------------------------------------------------------------------
-        | 5) Replace collection pada paginator
-        |--------------------------------------------------------------------------
-        */
-        $childIdsPaginated->setCollection($final);
+        $childIdsPaginated->setCollection($formatted);
 
         return $childIdsPaginated;
     }
@@ -143,17 +140,15 @@ new #[Lazy] class extends Component {
         {{-- FACILITY (Select2) --}}
         <div class="form-group" wire:ignore>
             <select id="select_facility" class="form-control select2bs4" wire:model.live="facility_id">
-                @foreach ($facilities as $facility)
-                    <option value="{{ $facility->id }}">
-                        {{ $facility->name }}
-                    </option>
+                @foreach ($facilities as $id => $name)
+                    <option value="{{ $id }}">{{ $name }}</option>
                 @endforeach
             </select>
         </div>
 
         {{-- SEARCH --}}
         <div class="col-3">
-            <input type="text" class="form-control" placeholder="Search..." wire:model.live="search">
+            <input type="text" class="form-control" placeholder="Search..." wire:model.live.debounce.300ms="search">
         </div>
     </div>
 
@@ -181,7 +176,7 @@ new #[Lazy] class extends Component {
                                 <span class="badge badge-primary">{{ $v }}</span>
                             @endforeach
                         </td>
-                        <td>{{ date('d-m-Y', strtotime($item->date)) }}</td>
+                        <td>{{ \Carbon\Carbon::parse($item->date)->format('d-m-Y') }}</td>
                         <td>{{ $item->officer }}</td>
                     </tr>
                 @empty
@@ -202,7 +197,6 @@ new #[Lazy] class extends Component {
 @script
     <script>
         function initSelect2() {
-            // Pastikan select2 dihancurkan dulu agar tidak double binding
             if ($('#select_facility').hasClass("select2-hidden-accessible")) {
                 $('#select_facility').select2('destroy');
             }
@@ -211,17 +205,13 @@ new #[Lazy] class extends Component {
                 theme: 'bootstrap4'
             });
 
-            // Event select2 -> update livewire
             $('#select_facility').on('change', function() {
                 let val = $(this).val();
                 $wire.set('facility_id', val);
             });
         }
 
-        // Page load
         setTimeout(initSelect2, 200);
-
-        // Ini sangat penting: re-init setelah livewire update DOM
         document.addEventListener('livewire:update', initSelect2);
         document.addEventListener('livewire:navigated', initSelect2);
     </script>
