@@ -8,6 +8,7 @@ use App\Models\Facility;
 use App\Exports\ImmunizationExport;
 use App\Constants\AppConstants;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Livewire\Attributes\Lazy;
 use Illuminate\Support\Facades\Cache;
 
@@ -20,10 +21,8 @@ new #[Lazy] class extends Component {
     public $search = '';
     public $paginationOptions = [];
 
-    // filter
     public $facility_id;
     public $date;
-
     public $facilities = [];
 
     protected $listeners = [
@@ -34,12 +33,9 @@ new #[Lazy] class extends Component {
     public function mount()
     {
         $this->paginationOptions = AppConstants::PAGINATIONS;
-
-        // Clear cache untuk memastikan data fresh
-        Cache::forget('facilities_list');
-
-        // Ambil data sebagai array dengan key value
-        $this->facilities = Facility::orderBy('name')->pluck('name', 'id')->toArray();
+        $this->facilities = Cache::remember('facilities_list', 3600, function () {
+            return Facility::orderBy('name')->pluck('name', 'id')->toArray();
+        });
 
         $this->facility_id = 1;
         $this->date = now()->format('Y-m-d');
@@ -107,11 +103,69 @@ new #[Lazy] class extends Component {
         return $childIdsPaginated;
     }
 
+    /**
+     * Ambil semua data untuk export (tanpa pagination)
+     */
+    private function getAllRecords()
+    {
+        $childIds = ImmunizationRecord::query()
+            ->select('child_id')
+            ->where('health_facility_id', $this->facility_id)
+            ->whereDate('date_given', $this->date)
+            ->when($this->search, function ($query) {
+                $query->whereHas('child', fn($q) => $q->where('name', 'like', "%{$this->search}%"));
+            })
+            ->groupBy('child_id')
+            ->orderBy('child_id')
+            ->pluck('child_id');
+
+        if ($childIds->isEmpty()) {
+            return collect([]);
+        }
+
+        $records = ImmunizationRecord::with(['child', 'vaccine', 'facility'])
+            ->whereIn('child_id', $childIds)
+            ->where('health_facility_id', $this->facility_id)
+            ->whereDate('date_given', $this->date)
+            ->get();
+
+        return $records
+            ->groupBy('child_id')
+            ->map(
+                fn($items) => (object) [
+                    'child' => $items->first()->child->name,
+                    'facility' => $items->first()->facility->name,
+                    'date' => $items->first()->date_given,
+                    'officer' => $items->first()->officer_name,
+                    'vaccines' => $items->pluck('vaccine.name')->toArray(),
+                ],
+            )
+            ->values();
+    }
+
     public function exportExcel()
     {
         $fileName = "immunization-{$this->date}.xlsx";
-
         return Excel::download(new ImmunizationExport($this->facility_id, $this->date, $this->search), $fileName);
+    }
+
+    public function exportPdf()
+    {
+        $records = $this->getAllRecords();
+        $facilityName = $this->facilities[$this->facility_id] ?? 'Unknown Facility';
+
+        $pdf = Pdf::loadView('pdf.immunization-table', [
+            'records' => $records,
+            'facility' => $facilityName,
+            'date' => $this->date,
+            'search' => $this->search,
+            'generatedAt' => now()->format('d-m-Y H:i:s'),
+        ]);
+
+        $pdf->setPaper('a4', 'landscape');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+
+        return response()->streamDownload(fn() => print $pdf->output(), "immunization-{$this->date}-" . now()->format('His') . '.pdf');
     }
 };
 ?>
@@ -122,7 +176,6 @@ new #[Lazy] class extends Component {
 
 <div>
     <div class="mb-3 d-flex justify-content-between">
-
         {{-- PAGINATE --}}
         <div class="col-2">
             <select wire:model.live="paginate" class="form-control">
@@ -137,7 +190,7 @@ new #[Lazy] class extends Component {
             <input type="date" wire:model.live="date" class="form-control">
         </div>
 
-        {{-- FACILITY (Select2) --}}
+        {{-- FACILITY --}}
         <div class="form-group" wire:ignore>
             <select id="select_facility" class="form-control select2bs4" wire:model.live="facility_id">
                 @foreach ($facilities as $id => $name)
@@ -164,7 +217,6 @@ new #[Lazy] class extends Component {
                     <th>Officer Name</th>
                 </tr>
             </thead>
-
             <tbody>
                 @forelse ($this->immunizationRecords as $item)
                     <tr>
@@ -200,17 +252,13 @@ new #[Lazy] class extends Component {
             if ($('#select_facility').hasClass("select2-hidden-accessible")) {
                 $('#select_facility').select2('destroy');
             }
-
             $('#select_facility').select2({
                 theme: 'bootstrap4'
             });
-
             $('#select_facility').on('change', function() {
-                let val = $(this).val();
-                $wire.set('facility_id', val);
+                $wire.set('facility_id', $(this).val());
             });
         }
-
         setTimeout(initSelect2, 200);
         document.addEventListener('livewire:update', initSelect2);
         document.addEventListener('livewire:navigated', initSelect2);
